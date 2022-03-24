@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "expo start",
-    "ios": "expo start --ios",
-    "android": "expo start --android",
+    "start": "expo start --dev-client",
+    "ios": "expo run:ios",
+    "android": "expo run:android",
     "test:e2e": "./bin/downloadExpoApp.sh && detox test --configuration ios.sim.expo",
     "build:e2e": "detox build -c ios.sim.expo",
     "ci:test:e2e": "detox test -c ios.sim.release -l verbose --cleanup",
@@ -52,7 +52,12 @@
     "reactotron-mst": "3.1.4",
     "reactotron-react-js": "^3.3.7",
     "reactotron-react-native": "5.0.1",
-    "validate.js": "0.13.1"
+    "validate.js": "0.13.1",
+    "expo-splash-screen": "~0.13.5",
+    "expo-updates": "~0.10.13",
+    "react-dom": "17.0.1",
+    "react-native-reanimated": "~2.2.0",
+    "react-native-web": "0.17.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
@@ -187,6 +192,5 @@
       "react/prop-types": "off",
       "space-before-function-paren": 0
     }
-  },
-  "main": "node_modules/expo/AppEntry.js"
+  }
 }
