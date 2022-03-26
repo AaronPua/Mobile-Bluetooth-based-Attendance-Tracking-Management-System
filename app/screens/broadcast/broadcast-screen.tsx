@@ -30,7 +30,7 @@ const ROOT: ViewStyle = {
 
 // REMOVE ME! ⬇️ This TS ignore will not be necessary after you've added the correct navigator param type
 // @ts-ignore
-export const ScanScreen: FC<StackScreenProps<NavigatorParamList, "scan">> = observer(function ScanScreen() {
+export const BroadcastScreen: FC<StackScreenProps<NavigatorParamList, "broadcast">> = observer(function ScanScreen() {
   // Pull in one of our MST stores
   // const { someStore, anotherStore } = useStores()
 
