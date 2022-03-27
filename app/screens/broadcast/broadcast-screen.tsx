@@ -43,11 +43,9 @@ export const BroadcastScreen: FC<StackScreenProps<NavigatorParamList, "broadcast
 
     return (
         <Screen style={ROOT} preset="scroll">
-        <Text preset="header" text="scan" />
-
+        <Text preset="header" text="broadcast" />
             <Button text="Start Advertising" onPress={() => startBeaconAdvertisement()} />
             <Button text="Stop Advertising" onPress={() => stopAdvertising()} />
-
         </Screen>
     )
 })

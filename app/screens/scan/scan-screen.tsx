@@ -1,14 +1,14 @@
-import React, { FC, useState } from "react"
+import React, { FC, useEffect, useState } from "react"
 import { observer } from "mobx-react-lite"
 import { ViewStyle } from "react-native"
 import { StackScreenProps } from "@react-navigation/stack"
 import { NavigatorParamList } from "../../navigators"
-import { Screen, Text } from "../../components"
+import { Button, Screen, Text } from "../../components"
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../../models"
 import { color } from "../../theme"
 
-import { BleManager } from 'react-native-ble-plx';
+import { BleManager, Device } from 'react-native-ble-plx';
 
 const ROOT: ViewStyle = {
   backgroundColor: color.palette.black,
@@ -35,10 +35,47 @@ export const ScanScreen: FC<StackScreenProps<NavigatorParamList, "scan">> = obse
 
   // state to give the user a feedback about the manager scanning devices
   const [isLoading, setIsLoading] = useState(false);
+  const [scannedDevices, setScannedDevices] = useState(new Map());
+
+    const startScanningForDevices = () => {
+        manager.startDeviceScan(null, { allowDuplicates: false }, (error, scannedDevice) => {
+            if(error)
+                console.warn(error);
+            
+            if(scannedDevice) {
+                addDevice(scannedDevice);           
+            }
+        });
+    }
+
+    const stopScanningForDevices = () => {
+        manager.stopDeviceScan();
+    }
+
+    const addDevice = (device: Device) => {
+        const deviceProperties = {
+            id: device.id,
+            name: device.name,
+            rssi: device.rssi,
+            serviceData: device.serviceData,
+            serviceUUIDs: device.serviceUUIDs,
+            localName: device.localName,
+            txPowerLevel: device.txPowerLevel,
+        }
+        console.log(deviceProperties);
+    }
+
+    useEffect(() => {
+        return () => {
+            manager.destroy();
+        }
+    }, [manager]);
   
-  return (
-    <Screen style={ROOT} preset="scroll">
-      <Text preset="header" text="scan" />
-    </Screen>
-  )
+    return (
+        <Screen style={ROOT} preset="scroll">
+        <Text preset="header" text="scan" />
+            <Button text="Start Scanning" onPress={() => startScanningForDevices()} />
+            <Button text="Stop Scanning" onPress={() => stopScanningForDevices()} />
+        </Screen>
+    )
 })

@@ -25,3 +25,7 @@ export const stopAdvertising = () => {
     .then(success => console.log("Stop Broadcast Successful", success))
     .catch(error => console.log("Stop Broadcast Error", error));
 }
+
+export const startScan = () => {
+    
+}
