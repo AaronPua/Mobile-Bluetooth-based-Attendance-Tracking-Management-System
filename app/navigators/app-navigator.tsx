@@ -8,7 +8,7 @@ import React from "react"
 import { useColorScheme } from "react-native"
 import { NavigationContainer, DefaultTheme, DarkTheme } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
-import { WelcomeScreen, DemoScreen, DemoListScreen, BroadcastScreen } from "../screens"
+import { WelcomeScreen, DemoScreen, DemoListScreen, BroadcastScreen, ScanScreen } from "../screens"
 import { navigationRef, useBackButtonHandler } from "./navigation-utilities"
 
 /**
@@ -29,6 +29,7 @@ export type NavigatorParamList = {
   demoList: undefined
   // 🔥 Your screens go here
   broadcast: undefined
+  scan: undefined
 }
 
 // Documentation: https://reactnavigation.org/docs/stack-navigator/
@@ -47,6 +48,7 @@ const AppStack = () => {
       {/* <Stack.Screen name="demoList" component={DemoListScreen} /> */}
       {/** 🔥 Your screens go here */}
       <Stack.Screen name="broadcast" component={BroadcastScreen} />
+      <Stack.Screen name="scan" component={ScanScreen} />
     </Stack.Navigator>
   )
 }
