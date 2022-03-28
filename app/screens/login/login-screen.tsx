@@ -5,6 +5,8 @@ import { NavigatorParamList } from "../../navigators"
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../../models"
 import { Box, Center, FormControl, Heading, HStack, Input, Link, VStack, Text, Button, StatusBar, View } from "native-base"
+import Meteor from '@meteorrn/core'
+import { useNavigation } from "@react-navigation/native"
 
 // STOP! READ ME FIRST!
 // To fix the TS error below, you'll need to add the following things in your navigation config:
@@ -20,7 +22,16 @@ export const LoginScreen: FC<StackScreenProps<NavigatorParamList, "login">> = ob
   // const { someStore, anotherStore } = useStores()
 
   // Pull in navigation via hook
-  // const navigation = useNavigation()
+//   const navigation = useNavigation()
+
+    const loginWithPassword = () => {
+        return new Promise((resolve, reject) => {
+            // Meteor.loginWithPassword(model.email, model.password, error => {
+            //     error ? reject(error) : resolve(navigation('/'));
+            // });
+        });
+    }
+
     return (
         <View>
             <StatusBar bg="#3700B3" barStyle="light-content" />
