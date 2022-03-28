@@ -5,3 +5,4 @@ export * from "./error/error-boundary"
 // export other screens here
 export * from "./broadcast/broadcast-screen"
 export * from "./scan/scan-screen"
+export * from "./login/login-screen"

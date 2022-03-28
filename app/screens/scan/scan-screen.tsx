@@ -7,6 +7,7 @@ import { Button, Screen, Text } from "../../components"
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../../models"
 import { color } from "../../theme"
+import { FlatList } from 'native-base'
 
 import { BleManager, Device } from 'react-native-ble-plx';
 

@@ -26,6 +26,6 @@ export const stopAdvertising = () => {
     .catch(error => console.log("Stop Broadcast Error", error));
 }
 
-export const startScan = () => {
+// export const startScan = () => {
     
-}
+// }
