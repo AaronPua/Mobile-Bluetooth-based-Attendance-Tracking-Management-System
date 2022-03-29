@@ -42,15 +42,15 @@ const AppStack = () => {
       screenOptions={{
         headerShown: false,
       }}
-      initialRouteName="login"
+      initialRouteName="scan"
     >
       {/* <Stack.Screen name="welcome" component={WelcomeScreen} /> */}
       {/* <Stack.Screen name="demo" component={DemoScreen} /> */}
       {/* <Stack.Screen name="demoList" component={DemoListScreen} /> */}
       {/** 🔥 Your screens go here */}
+      {/* <Stack.Screen name="login" component={LoginScreen} /> */}
       {/* <Stack.Screen name="broadcast" component={BroadcastScreen} /> */}
-      {/* <Stack.Screen name="scan" component={ScanScreen} /> */}
-      <Stack.Screen name="login" component={LoginScreen} />
+      <Stack.Screen name="scan" component={ScanScreen} />
     </Stack.Navigator>
   )
 }

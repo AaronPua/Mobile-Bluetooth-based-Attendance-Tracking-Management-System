@@ -1,20 +1,12 @@
 import React, { FC, useEffect, useState } from "react"
 import { observer } from "mobx-react-lite"
-import { ViewStyle } from "react-native"
 import { StackScreenProps } from "@react-navigation/stack"
 import { NavigatorParamList } from "../../navigators"
-import { Button, Screen, Text } from "../../components"
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../../models"
-import { color } from "../../theme"
-import { FlatList } from 'native-base'
+import { Box, HStack, StatusBar, View, Text, Center, Button } from 'native-base'
 
 import { BleManager, Device } from 'react-native-ble-plx';
-
-const ROOT: ViewStyle = {
-  backgroundColor: color.palette.black,
-  flex: 1,
-}
 
 // STOP! READ ME FIRST!
 // To fix the TS error below, you'll need to add the following things in your navigation config:
@@ -32,11 +24,7 @@ export const ScanScreen: FC<StackScreenProps<NavigatorParamList, "scan">> = obse
   // Pull in navigation via hook
   // const navigation = useNavigation()
 
-  const manager = new BleManager();
-
-  // state to give the user a feedback about the manager scanning devices
-  const [isLoading, setIsLoading] = useState(false);
-  const [scannedDevices, setScannedDevices] = useState(new Map());
+    const manager = new BleManager();
 
     const startScanningForDevices = () => {
         manager.startDeviceScan(null, { allowDuplicates: false }, (error, scannedDevice) => {
@@ -47,10 +35,16 @@ export const ScanScreen: FC<StackScreenProps<NavigatorParamList, "scan">> = obse
                 addDevice(scannedDevice);           
             }
         });
+
+        setTimeout(() => {
+            manager.stopDeviceScan();
+            console.log('stopped on its own');
+        }, 5000);
     }
 
     const stopScanningForDevices = () => {
         manager.stopDeviceScan();
+        console.log('stopped');
     }
 
     const addDevice = (device: Device) => {
@@ -58,10 +52,8 @@ export const ScanScreen: FC<StackScreenProps<NavigatorParamList, "scan">> = obse
             id: device.id,
             name: device.name,
             rssi: device.rssi,
-            serviceData: device.serviceData,
             serviceUUIDs: device.serviceUUIDs,
             localName: device.localName,
-            txPowerLevel: device.txPowerLevel,
         }
         console.log(deviceProperties);
     }
@@ -73,10 +65,23 @@ export const ScanScreen: FC<StackScreenProps<NavigatorParamList, "scan">> = obse
     }, [manager]);
   
     return (
-        <Screen style={ROOT} preset="scroll">
-        <Text preset="header" text="scan" />
-            <Button text="Start Scanning" onPress={() => startScanningForDevices()} />
-            <Button text="Stop Scanning" onPress={() => stopScanningForDevices()} />
-        </Screen>
+        <View backgroundColor="white" flex="1">
+            <StatusBar backgroundColor="black" barStyle="light-content" />
+            <Box safeAreaTop bg="#6200ee" />
+            <HStack bg="#6200ee" px="3" py="3" justifyContent="space-between" alignItems="center" w="100%">
+                <HStack alignItems="center">
+                <Text color="white" fontSize="20" fontWeight="bold">
+                    COMP8047
+                </Text>
+                </HStack>
+            </HStack>
+
+            <Center>
+                <HStack space={3} mt="5">
+                    <Button onPress={() => startScanningForDevices()}>Start Scanning</Button>
+                    <Button onPress={() => stopScanningForDevices()}>Stop Scanning</Button>
+                </HStack>
+            </Center>
+        </View>
     )
 })
