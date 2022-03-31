@@ -3,14 +3,14 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, { FC, useEffect, useState } from "react"
 import { observer } from "mobx-react-lite"
-import { Alert, DeviceEventEmitter, FlatList, NativeEventEmitter, NativeModules, PermissionsAndroid, Platform, SafeAreaView, ScrollView, StatusBar, TouchableHighlight, View, ViewStyle, Button, StyleSheet } from "react-native"
+import { NativeEventEmitter, NativeModules } from "react-native"
 import { StackScreenProps } from "@react-navigation/stack"
 import { NavigatorParamList } from "../../navigators"
-import { Screen, Text } from "../../components"
+// import { Screen, Text } from "../../components"
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../../models"
-import { color } from "../../theme"
-import { Colors } from "react-native/Libraries/NewAppScreen"
+import { Box, HStack, VStack, Text, FlatList, View, StatusBar, Center, Button, Spacer } from 'native-base'
+import { MaterialIcons } from '@expo/vector-icons'
 
 import BleManager from 'react-native-ble-manager'
 const BleManagerModule = NativeModules.BleManager
@@ -26,15 +26,15 @@ const bleEmitter = new NativeEventEmitter(BleManagerModule)
 // REMOVE ME! ⬇️ This TS ignore will not be necessary after you've added the correct navigator param type
 // @ts-ignore
 export const ScanScreen: FC<StackScreenProps<NavigatorParamList, "scan">> = observer(function ScanScreen() {
-  // Pull in one of our MST stores
-  // const { someStore, anotherStore } = useStores()
+    // Pull in one of our MST stores
+    // const { someStore, anotherStore } = useStores()
 
-  // Pull in navigation via hook
-  // const navigation = useNavigation()
+    // Pull in navigation via hook
+    // const navigation = useNavigation()
 
     const [isScanning, setIsScanning] = useState(false);
-    const peripherals = new Map();
-    const [list, setList] = useState([]);
+    const scannedDevices = new Map();
+    const [devicesList, setDevicesList] = useState([]);
 
     const initModule = () => {
         BleManager.start({ showAlert: false })
@@ -43,19 +43,13 @@ export const ScanScreen: FC<StackScreenProps<NavigatorParamList, "scan">> = obse
         })
     }
 
-    // start to scan peripherals
     const startScan = () => {
-        // skip if scan process is currenly happening
-        if (isScanning) {
+        if (isScanning)
             return;
-        }
 
-        // first, clear existing peripherals
-        peripherals.clear();
-        setList(Array.from(peripherals.values()));
+        clearScannedDevices();
 
-        // then re-scan it
-        BleManager.scan([], 30, true)
+        BleManager.scan([], 5, true)
         .then(() => {
             console.log('Scanning...');
             setIsScanning(true);
@@ -65,148 +59,107 @@ export const ScanScreen: FC<StackScreenProps<NavigatorParamList, "scan">> = obse
         });
     }
 
-    // handle stop scan event
+    const clearScannedDevices = () => {
+        scannedDevices.clear();
+        setDevicesList(Array.from(scannedDevices.values()));
+    }
+
     const handleStopScan = () => {
         console.log('Scan is stopped');
         setIsScanning(false);
     }
 
-    // handle discovered peripheral
-    const handleDiscoverPeripheral = (peripheral) => {
-        console.log('Got ble peripheral', peripheral);
+    const handleScannedDevices = (device) => {
+        console.log('Got ble peripheral', device);
 
-        if (!peripheral.name) {
-            peripheral.name = 'NO NAME';
+        if (!device.name) {
+            device.name = 'N/A';
         }
 
-        peripherals.set(peripheral.id, peripheral);
-        setList(Array.from(peripherals.values()));
+        scannedDevices.set(device.id, device);
+        setDevicesList(Array.from(scannedDevices.values()));
     }
 
-    // get advertised peripheral local name (if exists). default to peripheral name
-    const getPeripheralName = (item) => {
-        if (item.advertising) {
-            if (item.advertising.localName) {
-                return item.advertising.localName;
+    const getDeviceName = (device: any) => {
+        if (device.advertising) {
+            if (device.advertising.localName) {
+                return device.advertising.localName;
             }
         }
+        return device.name;
+    }
 
-        return item.name;
-    };
+    const truncateString = (str: any, num: any) => {
+        return (str != null && str.length > num) ? str.slice(0, num) + "..." : str;
+    }
 
     useEffect(() => {
         initModule()
-
         // add ble listeners on mount
-        bleEmitter.addListener('BleManagerDiscoverPeripheral', handleDiscoverPeripheral);
+        bleEmitter.addListener('BleManagerDiscoverPeripheral', handleScannedDevices);
         bleEmitter.addListener('BleManagerStopScan', handleStopScan);
 
         // remove ble listeners on unmount
         return () => {
-        console.log('Unmount');
-
-            bleEmitter.removeListener('BleManagerDiscoverPeripheral', handleDiscoverPeripheral);
+            console.log('Unmount');
+            bleEmitter.removeListener('BleManagerDiscoverPeripheral', handleScannedDevices);
             bleEmitter.removeListener('BleManagerStopScan', handleStopScan);
         };
     }, [])
 
     // render list of devices
-    const renderItem = (item) => {
-        const color = item.connected ? 'green' : '#fff';
+    const renderItem = (item: any) => {
         return (
-            // <TouchableHighlight onPress={() => connectAndTestPeripheral(item)}>
-            <TouchableHighlight>
-                <View style={styles.body}>
-                    <Text
-                        style={{
-                        fontSize: 12,
-                        textAlign: 'center',
-                        color: '#333333',
-                        padding: 10,
-                        }}>
-                        {getPeripheralName(item)}
-                    </Text>
-                    <Text
-                        style={{
-                        fontSize: 10,
-                        textAlign: 'center',
-                        color: '#333333',
-                        padding: 2,
-                        }}>
-                        RSSI: {item.rssi}
-                    </Text>
-                    <Text
-                        style={{
-                        fontSize: 8,
-                        textAlign: 'center',
-                        color: '#333333',
-                        padding: 2,
-                        paddingBottom: 20,
-                        }}>
-                        {item.id}
-                    </Text>
-                </View>
-            </TouchableHighlight>
-        );
-    };
+            <Box bg="#C1DBB3" pl="3" pr="4" py="2" mx="4" my="2" borderRadius="20" shadow="3">
+                <HStack space={3} justifyContent="space-between" alignItems="center">
+                    <MaterialIcons name="bluetooth-searching" size={32} color="black" />
+                    <VStack>
+                        <Text _dark={{ color: "warmGray.50" }} color="coolGray.800" bold>
+                            {getDeviceName(item)}
+                        </Text>
+                        <Text color="coolGray.600" _dark={{ color: "warmGray.200" }}>
+                            {item.id}
+                        </Text>
+                        {item.advertising.serviceUUIDs != null &&
+                            item.advertising.serviceUUIDs[0] != null &&
+                            <Text color="coolGray.600" _dark={{ color: "warmGray.200" }}>
+                                {truncateString(item.advertising.serviceUUIDs[0], 30)}
+                            </Text>}
+                    </VStack>
+                    <Spacer />
+                    <VStack>
+                        <Text _dark={{ color: "warmGray.50" }} color="coolGray.800" alignSelf="flex-start">
+                            RSSI
+                        </Text>
+                        <Text _dark={{ color: "warmGray.50" }} color="coolGray.800" alignSelf="flex-start">
+                            {item.rssi}
+                        </Text>
+                    </VStack>
+                </HStack>
+            </Box>
+        )
+    }
+
     return (
-        <>
-            <StatusBar barStyle="dark-content" />
-            <SafeAreaView style={styles.safeAreaView}>
-                {/* header */}
-                <View style={styles.body}>
-                <View style={styles.scanButton}>
-                    <Button
-                    title={'Scan Bluetooth Devices'}
-                    onPress={() => startScan()}
-                    />
-                </View>
+        <View backgroundColor="white" flex="1">
+            <StatusBar backgroundColor="black" barStyle="light-content" />
+            <Box safeAreaTop bg="#6200ee" />
+            <HStack bg="#6200ee" px="3" py="3" justifyContent="space-between" alignItems="center" w="100%">
+                <HStack alignItems="center">
+                    <Text color="white" fontSize="20" fontWeight="bold">
+                        COMP8047
+                    </Text>
+                </HStack>
+            </HStack>
 
-                {list.length === 0 && (
-                    <View style={styles.noPeripherals}>
-                    <Text style={styles.noPeripheralsText}>No peripherals</Text>
-                    </View>
-                )}
-                </View>
+            <Center>
+                <HStack space={3} mt="4" mb="3">
+                    <Button onPress={() => startScan()}>Scan Devices</Button>
+                    <Button onPress={() => clearScannedDevices()}>Clear Devices</Button>
+                </HStack>
+            </Center>
 
-                {/* ble devices */}
-                <FlatList
-                    data={list}
-                    renderItem={({item}) => renderItem(item)}
-                    keyExtractor={(item) => item.id}
-                />
-                
-            </SafeAreaView>
-        </>
+            <FlatList data={devicesList} keyExtractor={item => item.id} renderItem={({ item }) => renderItem(item)}/>
+        </View>
     )
 })
-
-const styles = StyleSheet.create({
-  body: {
-    backgroundColor: Colors.white,
-  },
-  footer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 30,
-    width: '100%',
-  },
-  footerButton: {
-    alignSelf: 'stretch',
-    backgroundColor: 'grey',
-    padding: 10,
-  },
-  noPeripherals: {
-    flex: 1,
-    margin: 20,
-  },
-  noPeripheralsText: {
-    textAlign: 'center',
-  },
-  safeAreaView: {
-    flex: 1,
-  },
-  scanButton: {
-    margin: 10,
-  },
-});
