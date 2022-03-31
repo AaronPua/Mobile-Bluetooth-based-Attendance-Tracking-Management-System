@@ -10,7 +10,7 @@ import { NavigatorParamList } from "../../navigators"
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../../models"
 import { Box, HStack, VStack, Text, FlatList, View, StatusBar, Center, Button, Spacer } from 'native-base'
-import { MaterialIcons } from '@expo/vector-icons'
+import { MaterialIcons, Ionicons } from '@expo/vector-icons'
 
 import BleManager from 'react-native-ble-manager'
 const BleManagerModule = NativeModules.BleManager
@@ -120,11 +120,12 @@ export const ScanScreen: FC<StackScreenProps<NavigatorParamList, "scan">> = obse
                         <Text color="coolGray.600" _dark={{ color: "warmGray.200" }}>
                             {item.id}
                         </Text>
-                        {item.advertising.serviceUUIDs != null &&
+                        { item.advertising.serviceUUIDs != null &&
                             item.advertising.serviceUUIDs[0] != null &&
                             <Text color="coolGray.600" _dark={{ color: "warmGray.200" }}>
-                                {truncateString(item.advertising.serviceUUIDs[0], 30)}
-                            </Text>}
+                                {truncateString(item.advertising.serviceUUIDs[0], 23)}
+                            </Text>
+                        }
                     </VStack>
                     <Spacer />
                     <VStack>
@@ -150,14 +151,19 @@ export const ScanScreen: FC<StackScreenProps<NavigatorParamList, "scan">> = obse
                         COMP8047
                     </Text>
                 </HStack>
-            </HStack>
-
-            <Center>
-                <HStack space={3} mt="4" mb="3">
-                    <Button onPress={() => startScan()}>Scan Devices</Button>
-                    <Button onPress={() => clearScannedDevices()}>Clear Devices</Button>
+                <HStack alignItems="center">
+                    <Button bg="#6200ee" size="md" onPress={() => clearScannedDevices()}>
+                        <Text color="white" fontSize="16">
+                            <Ionicons name="trash-outline" size={24} color="white" />
+                        </Text>
+                    </Button>
+                    <Button bg="#6200ee" size="md" onPress={() => startScan()}>
+                        <Text color="white" fontSize="16">
+                            Scan
+                        </Text>
+                    </Button>
                 </HStack>
-            </Center>
+            </HStack>
 
             <FlatList data={devicesList} keyExtractor={item => item.id} renderItem={({ item }) => renderItem(item)}/>
         </View>
