@@ -3,18 +3,12 @@ import { observer } from "mobx-react-lite"
 import { ViewStyle } from "react-native"
 import { StackScreenProps } from "@react-navigation/stack"
 import { NavigatorParamList } from "../../navigators"
-import { Screen, Text, Button } from "../../components"
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../../models"
-import { color } from "../../theme"
 import uuid from 'uuid-random'
-import { requestBluetoothPermission, requestLocationPermission } from "../../utils/permissions"
+import { requestLocationBluetoothPermissions } from "../../utils/permissions"
 import { startAdvertising, stopAdvertising } from "../../utils/bluetooth"
-
-const ROOT: ViewStyle = {
-  backgroundColor: color.palette.black,
-  flex: 1,
-}
+import { Box, HStack, VStack, Text, View, StatusBar, Center, Button, Spacer } from 'native-base'
 
 // STOP! READ ME FIRST!
 // To fix the TS error below, you'll need to add the following things in your navigation config:
@@ -33,19 +27,24 @@ export const BroadcastScreen: FC<StackScreenProps<NavigatorParamList, "broadcast
   // const navigation = useNavigation()
 
     useEffect(() => {
-        requestLocationPermission();
-        requestBluetoothPermission();
-    });
+        requestLocationBluetoothPermissions();
+    }, []);
 
     const startBeaconAdvertisement = () => {
         startAdvertising(uuid(), 'BLE Beacon Trial');
     }
 
     return (
-        <Screen style={ROOT} preset="scroll">
-        <Text preset="header" text="broadcast" />
-            <Button text="Start Advertising" onPress={() => startBeaconAdvertisement()} />
-            <Button text="Stop Advertising" onPress={() => stopAdvertising()} />
-        </Screen>
+        <View backgroundColor="white" flex="1">
+            <StatusBar backgroundColor="black" barStyle="light-content" />
+            <Box safeAreaTop bg="#6200ee" />
+            <HStack bg="#6200ee" px="3" py="3" justifyContent="space-between" alignItems="center" w="100%">
+                <HStack alignItems="center">
+                    <Text color="white" fontSize="20" fontWeight="bold">
+                        COMP8047
+                    </Text>
+                </HStack>
+            </HStack>
+        </View>
     )
 })

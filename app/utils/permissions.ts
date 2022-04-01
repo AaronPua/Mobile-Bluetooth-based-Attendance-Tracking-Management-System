@@ -1,7 +1,8 @@
+// eslint-disable-next-line react-native/split-platform-components
 import { Alert, PermissionsAndroid } from 'react-native';
 import BLEAdvertiser from 'react-native-ble-advertiser';
 
-export const requestLocationPermission = async () => {
+export const requestLocationBluetoothPermissions = async () => {
     try {
         const granted = await PermissionsAndroid.request(
             PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
@@ -13,18 +14,12 @@ export const requestLocationPermission = async () => {
                     buttonPositive: 'OK',
                 },
             );
-            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                console.log('[Permissions]', 'Location Permission granted');
-            } else {
-                console.log('[Permissions]', 'Location Permission denied');
-            }
-    } catch (err) {
-        console.warn(err);
-    }
-};
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            console.log('[Permissions]', 'Location Permission granted');
+        } else {
+            console.log('[Permissions]', 'Location Permission denied');
+        }
 
-export const requestBluetoothPermission = async () => {
-    try {
         const bluetoothActive = await BLEAdvertiser.getAdapterState().then(result => {
             console.log('[Bluetooth]', 'Bluetooth Status', result)
                 return result === "STATE_ON";
