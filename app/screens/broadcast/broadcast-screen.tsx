@@ -45,6 +45,12 @@ export const BroadcastScreen: FC<StackScreenProps<NavigatorParamList, "broadcast
                     </Text>
                 </HStack>
             </HStack>
+            <Center>
+                <HStack space={3} mt="4" mb="3">
+                    <Button onPress={() => startBeaconAdvertisement()}>Start Advertisement</Button>
+                    <Button onPress={() => stopAdvertising()}>Stop Advertisement</Button>
+                </HStack>
+            </Center>
         </View>
     )
 })

@@ -118,12 +118,12 @@ export const ScanScreen: FC<StackScreenProps<NavigatorParamList, "scan">> = obse
                             {getDeviceName(item)}
                         </Text>
                         <Text color="coolGray.600" _dark={{ color: "warmGray.200" }}>
-                            {truncateString(item.id, 23)}
+                            id: {truncateString(item.id, 20)}
                         </Text>
                         { item.advertising.serviceUUIDs != null &&
                             item.advertising.serviceUUIDs[0] != null &&
                             <Text color="coolGray.600" _dark={{ color: "warmGray.200" }}>
-                                {truncateString(item.advertising.serviceUUIDs[0], 23)}
+                                uuid: {truncateString(item.advertising.serviceUUIDs[0], 20)}
                             </Text>
                         }
                     </VStack>

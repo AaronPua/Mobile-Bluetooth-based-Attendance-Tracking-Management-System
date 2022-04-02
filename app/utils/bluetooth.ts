@@ -21,9 +21,11 @@ export const startAdvertising = (uuidString: string, beaconName: string) => {
 }
 
 export const stopAdvertising = () => {
-    BLEAdvertiser.stopBroadcast()
-    .then(success => console.log("Stop Broadcast Successful", success))
-    .catch(error => console.log("Stop Broadcast Error", error));
+    if(BLEAdvertiser.isActive()) {
+        BLEAdvertiser.stopBroadcast()
+        .then(success => console.log("Stop Broadcast Successful", success))
+        .catch(error => console.log("Stop Broadcast Error", error));
+    }
 }
 
 // export const startScan = () => {
