@@ -19,7 +19,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "bcit.comp8047.ios"
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
