@@ -37,7 +37,7 @@ export const ScanScreen: FC<StackScreenProps<NavigatorParamList, "scan">> = obse
     const [devicesList, setDevicesList] = useState([]);
 
     const initModule = () => {
-        BleManager.start({ showAlert: false })
+        BleManager.start({ showAlert: true })
         .then(() => {
             console.log('BleManager module initialized')
         })
@@ -118,7 +118,7 @@ export const ScanScreen: FC<StackScreenProps<NavigatorParamList, "scan">> = obse
                             {getDeviceName(item)}
                         </Text>
                         <Text color="coolGray.600" _dark={{ color: "warmGray.200" }}>
-                            {item.id}
+                            {truncateString(item.id, 23)}
                         </Text>
                         { item.advertising.serviceUUIDs != null &&
                             item.advertising.serviceUUIDs[0] != null &&

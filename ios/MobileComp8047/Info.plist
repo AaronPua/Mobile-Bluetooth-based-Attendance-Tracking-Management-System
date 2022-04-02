@@ -51,5 +51,18 @@
 	<false/>
   <key>UIStatusBarStyle</key>
   <string>UIStatusBarStyleDefault</string>
+  <key>NSLocationWhenInUseUsageDescription</key>
+  <string>...</string>
+  <key>NSBluetoothAlwaysUsageDescription</key>
+  <string>...</string>
+  <key>UIBackgroundModes</key>
+  <array>
+      <string>bluetooth-central</string>
+      <string>bluetooth-peripheral</string>
+  </array>
+  <key>UIRequiredDeviceCapabilities</key>
+  <array>
+      <string>bluetooth-le</string>
+  </array>
 </dict>
 </plist>
