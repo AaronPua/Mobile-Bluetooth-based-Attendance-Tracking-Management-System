@@ -3,10 +3,9 @@ import BLEAdvertiser from 'react-native-ble-advertiser';
 // Uses the Apple code to pick up iPhones
 const APPLE_ID = 0x4C;
 const MANUF_DATA = [1,0];
+BLEAdvertiser.setCompanyId(APPLE_ID);
 
 export const startAdvertising = (uuidString: string, beaconName: string) => {
-    BLEAdvertiser.setCompanyId(APPLE_ID);
-
     const options = {
         advertiseMode: 1, // ADVERTISE_MODE_BALANCED
         txPowerLevel: 1, // ADVERTISE_TX_POWER_LOW

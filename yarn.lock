@@ -15432,7 +15432,7 @@ react-lifecycles-compat@^3.0.0, react-lifecycles-compat@^3.0.4:
 
 "react-native-ble-advertiser@github:AaronPua/react-native-ble-advertiser":
   version "0.0.16"
-  resolved "https://codeload.github.com/AaronPua/react-native-ble-advertiser/tar.gz/139211d725ba29c0625660fbbe21b729036d7bf8"
+  resolved "https://codeload.github.com/AaronPua/react-native-ble-advertiser/tar.gz/24c9227c4b265dc372ae82ba54cbaf1d05860a4d"
 
 react-native-ble-manager@^8.0.2:
   version "8.0.2"

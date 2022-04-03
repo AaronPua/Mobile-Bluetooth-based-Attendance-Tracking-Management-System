@@ -273,6 +273,8 @@ PODS:
     - React-jsi (= 0.64.3)
     - React-perflogger (= 0.64.3)
   - React-jsinspector (0.64.3)
+  - react-native-ble-advertiser (0.0.16):
+    - React
   - react-native-ble-manager (8.0.2):
     - React-Core
   - react-native-netinfo (8.2.0):
@@ -423,6 +425,7 @@ DEPENDENCIES:
   - React-jsi (from `../node_modules/react-native/ReactCommon/jsi`)
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
+  - react-native-ble-advertiser (from `../node_modules/react-native-ble-advertiser/ios`)
   - react-native-ble-manager (from `../node_modules/react-native-ble-manager`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
@@ -521,6 +524,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsiexecutor"
   React-jsinspector:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
+  react-native-ble-advertiser:
+    :path: "../node_modules/react-native-ble-advertiser/ios"
   react-native-ble-manager:
     :path: "../node_modules/react-native-ble-manager"
   react-native-netinfo:
@@ -603,6 +608,7 @@ SPEC CHECKSUMS:
   React-jsi: a8b09c29521c798f1783348b37b511ba7b3dbeb3
   React-jsiexecutor: df6abc9fafbecb8e5b7a5fbc5e6d4bd017d594d5
   React-jsinspector: 34e23860273a23695342f58eed3ffd3ba10c31e0
+  react-native-ble-advertiser: 3d210079cf12ae287e8762228f564168636edde7
   react-native-ble-manager: 2d49a9a94b8a1fb548a5239b0969703282a3545f
   react-native-netinfo: e922cb2e3eaf9ccdf16b8d4744a89657377aa4a1
   react-native-safe-area-context: 584dc04881deb49474363f3be89e4ca0e854c057
