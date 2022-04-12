@@ -11,6 +11,7 @@ import { NavigatorParamList } from "../../navigators"
 // import { useStores } from "../../models"
 import { Box, HStack, VStack, Text, FlatList, View, StatusBar, Center, Button, Spacer, Pressable, Icon, IconButton } from 'native-base'
 import { MaterialIcons, Ionicons } from '@expo/vector-icons'
+import { requestLocationBluetoothPermissions } from "../../utils/permissions"
 
 import BleManager from 'react-native-ble-manager'
 const BleManagerModule = NativeModules.BleManager
@@ -78,7 +79,7 @@ export const ScanScreen: FC<StackScreenProps<NavigatorParamList, "scan">> = obse
     }
 
     const handleScannedDevices = (device) => {
-        console.log('Got ble peripheral', device);
+        // console.log('Got ble peripheral', device);
 
         if (!device.name) {
             device.name = 'N/A';
@@ -102,6 +103,7 @@ export const ScanScreen: FC<StackScreenProps<NavigatorParamList, "scan">> = obse
     }
 
     useEffect(() => {
+        requestLocationBluetoothPermissions();
         initModule()
         // add ble listeners on mount
         bleEmitter.addListener('BleManagerDiscoverPeripheral', handleScannedDevices);
