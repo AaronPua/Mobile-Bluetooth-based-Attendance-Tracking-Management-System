@@ -28,7 +28,7 @@ import Meteor from '@meteorrn/core'
 
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
 
-Meteor.connect("ws://192.168.1.100:3000/websocket")
+Meteor.connect("ws://192.168.1.104:3000/websocket")
 
 /**
  * This is the root component of our app.

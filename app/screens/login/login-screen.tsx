@@ -4,7 +4,7 @@ import { StackScreenProps } from "@react-navigation/stack"
 import { NavigatorParamList } from "../../navigators"
 import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../../models"
-import { Box, Center, FormControl, Heading, HStack, Input, Link, VStack, Text, Button, StatusBar, View, Alert, IconButton, CloseIcon, Collapse } from "native-base"
+import { Box, Center, FormControl, Heading, HStack, Input, Link, VStack, Text, Button, StatusBar, View, Alert, IconButton, CloseIcon, Collapse, WarningOutlineIcon } from "native-base"
 import Meteor, { useTracker } from '@meteorrn/core'
 import { useForm, Controller } from "react-hook-form"
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -27,7 +27,7 @@ export const LoginScreen: FC<StackScreenProps<NavigatorParamList, "login">> = ob
     const navigation = useNavigation()
 
     const [error, setError] = useState('')
-    const [showError, setShowError] = React.useState(true)
+    const [showError, setShowError] = React.useState(false)
 
     interface IFormInputs {
         email: string
@@ -35,8 +35,8 @@ export const LoginScreen: FC<StackScreenProps<NavigatorParamList, "login">> = ob
     }
 
     const schema = yup.object({
-        email: yup.string().email().required(),
-        password: yup.string().min(4).required(),
+        email: yup.string().email('Must be a valid email').required('Email is required'),
+        password: yup.string().required('Password is required'),
     }).required();
 
     const { control, register, handleSubmit, formState: { errors } } = useForm<IFormInputs>({
@@ -97,7 +97,7 @@ export const LoginScreen: FC<StackScreenProps<NavigatorParamList, "login">> = ob
                                             color: "coolGray.600"
                                             }
                                          }}>
-                                        No account is found with the current email and password.
+                                            {error}
                                         </Box>
                                     </VStack>
                                 </Alert>
@@ -119,7 +119,10 @@ export const LoginScreen: FC<StackScreenProps<NavigatorParamList, "login">> = ob
                                 )}
                                 name="email"
                             />
-                            {errors.email?.message}
+                            {/* {errors.email?.message} */}
+                            <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
+                                {errors.email?.message}
+                            </FormControl.ErrorMessage>
                         </FormControl>
                         <FormControl>
                             <FormControl.Label>Password</FormControl.Label>
@@ -136,22 +139,25 @@ export const LoginScreen: FC<StackScreenProps<NavigatorParamList, "login">> = ob
                                 )}
                                 name="password"
                             />
-                            {errors.password?.message}
-                            <Link _text={{ fontSize: "xs", fontWeight: "500", color: "indigo.500"}} alignSelf="flex-end" mt="1">
+                            {/* {errors.password?.message} */}
+                            <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
+                                {errors.password?.message}
+                            </FormControl.ErrorMessage>
+                            {/* <Link _text={{ fontSize: "xs", fontWeight: "500", color: "indigo.500"}} alignSelf="flex-end" mt="1">
                                 Forget Password?
-                            </Link>
+                            </Link> */}
                         </FormControl>
                         <Button mt="2" colorScheme="indigo" onPress={handleSubmit(loginWithPassword)}>
                             Sign in
                         </Button>
-                        <HStack mt="6" justifyContent="center">
+                        {/* <HStack mt="6" justifyContent="center">
                             <Text fontSize="sm" color="coolGray.600" _dark={{ color: "warmGray.200" }}>
                                 I'm a new user.{" "}
                             </Text>
                             <Link _text={{ color: "indigo.500", fontWeight: "medium", fontSize: "sm" }} href="#">
                                 Sign Up
                             </Link>
-                        </HStack>
+                        </HStack> */}
                     </VStack>
                 </Box>
             </Center>
