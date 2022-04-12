@@ -50,8 +50,8 @@ const AppStack = () => {
       {/* <Stack.Screen name="demoList" component={DemoListScreen} /> */}
       {/** 🔥 Your screens go here */}
       <Stack.Screen name="login" component={LoginScreen} />
-      <Stack.Screen name="broadcast" component={BroadcastScreen} />
-      <Stack.Screen name="scan" component={ScanScreen} />
+      {/* <Stack.Screen name="broadcast" component={BroadcastScreen} /> */}
+      {/* <Stack.Screen name="scan" component={ScanScreen} /> */}
       <Stack.Screen name="courses" component={CoursesScreen} />
     </Stack.Navigator>
   )
@@ -84,5 +84,5 @@ AppNavigator.displayName = "AppNavigator"
  *
  * `canExit` is used in ./app/app.tsx in the `useBackButtonHandler` hook.
  */
-const exitRoutes = ["welcome"]
+const exitRoutes = ["courses"]
 export const canExit = (routeName: string) => exitRoutes.includes(routeName)

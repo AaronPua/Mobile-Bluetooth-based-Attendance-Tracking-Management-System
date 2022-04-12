@@ -51,7 +51,7 @@ export const LoginScreen: FC<StackScreenProps<NavigatorParamList, "login">> = ob
                 setShowError(true);
             }
             else {
-                navigation.navigate({ name: 'scan' });
+                navigation.navigate({ name: 'courses' });
             }
         });
     }

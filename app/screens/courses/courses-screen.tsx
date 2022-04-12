@@ -1,17 +1,14 @@
 import React, { FC } from "react"
 import { observer } from "mobx-react-lite"
-import { ViewStyle } from "react-native"
 import { StackScreenProps } from "@react-navigation/stack"
 import { NavigatorParamList } from "../../navigators"
-import { Screen, Text } from "../../components"
+// import { Screen, Text } from "../../components"
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../../models"
-import { color } from "../../theme"
-
-const ROOT: ViewStyle = {
-  backgroundColor: color.palette.black,
-  flex: 1,
-}
+import { Box, HStack, StatusBar, View, Text, Spacer, VStack, FlatList } from "native-base"
+import { MaterialCommunityIcons } from '@expo/vector-icons'
+import Meteor from '@meteorrn/core';
+import { CoursesCollection, BeaconsCollection } from '../../utils/collections'
 
 // STOP! READ ME FIRST!
 // To fix the TS error below, you'll need to add the following things in your navigation config:
@@ -28,9 +25,45 @@ export const CoursesScreen: FC<StackScreenProps<NavigatorParamList, "courses">> 
 
   // Pull in navigation via hook
   // const navigation = useNavigation()
-  return (
-    <Screen style={ROOT} preset="scroll">
-      <Text preset="header" text="courses" />
-    </Screen>
-  )
+
+    const { userCourses, isLoadingUserCourses } = Meteor.useTracker(() => {
+        const userId = Meteor.userId();
+
+        const userCoursesHandler = Meteor.subscribe('courses.specificUser', userId);
+        const isLoadingUserCourses = !userCoursesHandler.ready();
+        const userCourses = CoursesCollection.find({}, { sort: { name: 1 } }).fetch();
+
+        return { userCourses, isLoadingUserCourses };
+    });
+
+    const renderItem = (item: any) => {
+        return (
+            <Box bg="#C1DBB3" pl="3" pr="4" py="2" mx="4" my="2" borderRadius="20" shadow="3">
+                <HStack space={3} justifyContent="flex-start" alignItems="center">
+                    <MaterialCommunityIcons name="teach" size={32} color="black" />
+                    <VStack>
+                        <Text fontSize="lg" _dark={{ color: "warmGray.50" }} color="coolGray.800" bold>
+                            {item.name}
+                        </Text>
+                    </VStack>
+                </HStack>
+            </Box>
+        )
+    }
+
+    return (
+        <View backgroundColor="white" flex="1">
+            <StatusBar backgroundColor="black" barStyle="light-content" />
+            <Box safeAreaTop bg="#6200ee" />
+            <HStack bg="#6200ee" px="3" py="3" justifyContent="space-between" alignItems="center" w="100%">
+                <HStack alignItems="center">
+                    <Text color="white" fontSize="20" fontWeight="bold">
+                        COMP8047
+                    </Text>
+                </HStack>
+            </HStack>
+
+            <FlatList data={userCourses} keyExtractor={(item: any) => item._id} renderItem={({ item }) => renderItem(item)} />
+        </View>
+    )
 })
