@@ -1,14 +1,13 @@
-import React, { FC } from "react"
+import React, { FC, useState, useEffect } from "react"
 import { observer } from "mobx-react-lite"
 import { StackScreenProps } from "@react-navigation/stack"
 import { NavigatorParamList } from "../../navigators"
-// import { Screen, Text } from "../../components"
-// import { useNavigation } from "@react-navigation/native"
+import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../../models"
-import { Box, HStack, StatusBar, View, Text, Spacer, VStack, FlatList } from "native-base"
+import { Box, HStack, StatusBar, View, Text, VStack, FlatList, Pressable } from "native-base"
 import { MaterialCommunityIcons } from '@expo/vector-icons'
-import Meteor from '@meteorrn/core';
-import { CoursesCollection, BeaconsCollection } from '../../utils/collections'
+import Meteor from '@meteorrn/core'
+import { CoursesCollection } from '../../utils/collections'
 
 // STOP! READ ME FIRST!
 // To fix the TS error below, you'll need to add the following things in your navigation config:
@@ -23,31 +22,75 @@ export const CoursesScreen: FC<StackScreenProps<NavigatorParamList, "courses">> 
   // Pull in one of our MST stores
   // const { someStore, anotherStore } = useStores()
 
-  // Pull in navigation via hook
-  // const navigation = useNavigation()
+    // Pull in navigation via hook
+    const navigation = useNavigation();
 
-    const { userCourses, isLoadingUserCourses } = Meteor.useTracker(() => {
+    const [isUserStudent, setIsUserStudent] = useState(false);
+    const [isUserInstructor, setIsUserInstructor] = useState(false);
+
+    const { userId, userCourses } = Meteor.useTracker(() => {
         const userId = Meteor.userId();
 
-        const userCoursesHandler = Meteor.subscribe('courses.specificUser', userId);
-        const isLoadingUserCourses = !userCoursesHandler.ready();
+        Meteor.subscribe('courses.specificUser', userId);
         const userCourses = CoursesCollection.find({}, { sort: { name: 1 } }).fetch();
 
-        return { userCourses, isLoadingUserCourses };
+        return { userId, userCourses };
     });
+
+     const isStudent = () => {
+        Meteor.call('users.isUserInRole', { 
+            userId: userId, 
+            roleName: 'student'
+        }, (error: any, response: any) => {
+            if(error) {
+                console.log(error);
+            } else {
+                setIsUserStudent(response);
+            }
+        });
+    }
+
+    const isInstructor = () => {
+        Meteor.call('users.isUserInRole', { 
+            userId: userId, 
+            roleName: 'instructor'
+        }, (error: any, response: any) => {
+            if(error) {
+                console.log(error);
+            } else {
+                setIsUserInstructor(response);
+            }
+        });
+    }
+
+    useEffect(() => {
+        isStudent();
+        isInstructor();
+    });
+
+    const navigateRoute = (item: any) => {
+        if(isUserStudent) {
+            navigation.navigate('courseStudent', { courseId: item._id });
+        }
+        if(isUserInstructor) {
+            navigation.navigate('courseInstructor', { courseId: item._id });
+        }
+    }
 
     const renderItem = (item: any) => {
         return (
-            <Box bg="#C1DBB3" pl="3" pr="4" py="2" mx="4" my="2" borderRadius="20" shadow="3">
-                <HStack space={3} justifyContent="flex-start" alignItems="center">
-                    <MaterialCommunityIcons name="teach" size={32} color="black" />
-                    <VStack>
-                        <Text fontSize="lg" _dark={{ color: "warmGray.50" }} color="coolGray.800" bold>
-                            {item.name}
-                        </Text>
-                    </VStack>
-                </HStack>
-            </Box>
+            <Pressable onPress={() => navigateRoute(item)}>
+                <Box bg="#C1DBB3" pl="3" pr="4" py="2" mx="4" my="2" borderRadius="20" shadow="3">
+                    <HStack space={3} justifyContent="flex-start" alignItems="center">
+                        <MaterialCommunityIcons name="teach" size={32} color="black" />
+                        <VStack>
+                            <Text fontSize="lg" _dark={{ color: "warmGray.50" }} color="coolGray.800" bold>
+                                {item.name}
+                            </Text>
+                        </VStack>
+                    </HStack>
+                </Box>
+            </Pressable>
         )
     }
 

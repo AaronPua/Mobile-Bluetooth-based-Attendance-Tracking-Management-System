@@ -8,7 +8,8 @@ import React from "react"
 import { useColorScheme } from "react-native"
 import { NavigationContainer, DefaultTheme, DarkTheme } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
-import { WelcomeScreen, DemoScreen, DemoListScreen, BroadcastScreen, ScanScreen, LoginScreen, CoursesScreen } from "../screens"
+import { WelcomeScreen, DemoScreen, DemoListScreen, BroadcastScreen, 
+    ScanScreen, LoginScreen, CoursesScreen, CourseStudentScreen, CourseInstructorScreen } from "../screens"
 import { navigationRef, useBackButtonHandler } from "./navigation-utilities"
 
 /**
@@ -32,6 +33,8 @@ export type NavigatorParamList = {
   scan: undefined
   login: undefined
   courses: undefined
+  courseStudent: { courseId: string } | undefined
+  courseInstructor: { courseId: string } | undefined
 }
 
 // Documentation: https://reactnavigation.org/docs/stack-navigator/
@@ -53,6 +56,8 @@ const AppStack = () => {
       {/* <Stack.Screen name="broadcast" component={BroadcastScreen} /> */}
       {/* <Stack.Screen name="scan" component={ScanScreen} /> */}
       <Stack.Screen name="courses" component={CoursesScreen} />
+      <Stack.Screen name="courseStudent" component={CourseStudentScreen} />
+      <Stack.Screen name="courseInstructor" component={CourseInstructorScreen} />
     </Stack.Navigator>
   )
 }
@@ -84,5 +89,5 @@ AppNavigator.displayName = "AppNavigator"
  *
  * `canExit` is used in ./app/app.tsx in the `useBackButtonHandler` hook.
  */
-const exitRoutes = ["courses"]
+const exitRoutes = ["login"]
 export const canExit = (routeName: string) => exitRoutes.includes(routeName)
