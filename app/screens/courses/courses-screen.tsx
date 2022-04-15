@@ -4,10 +4,11 @@ import { StackScreenProps } from "@react-navigation/stack"
 import { NavigatorParamList } from "../../navigators"
 import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../../models"
-import { Box, HStack, StatusBar, View, Text, VStack, FlatList, Pressable } from "native-base"
+import { Box, HStack, StatusBar, View, Text, VStack, FlatList, Pressable, Progress, Spacer } from "native-base"
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import Meteor from '@meteorrn/core'
 import { CoursesCollection } from '../../utils/collections'
+import _ from 'underscore';
 
 // STOP! READ ME FIRST!
 // To fix the TS error below, you'll need to add the following things in your navigation config:
@@ -28,13 +29,23 @@ export const CoursesScreen: FC<StackScreenProps<NavigatorParamList, "courses">> 
     const [isUserStudent, setIsUserStudent] = useState(false);
     const [isUserInstructor, setIsUserInstructor] = useState(false);
 
-    const { userId, userCourses } = Meteor.useTracker(() => {
+    const { userId, userCourses, userCoursesLessons } = Meteor.useTracker(() => {
         const userId = Meteor.userId();
 
         Meteor.subscribe('courses.specificUser', userId);
-        const userCourses = CoursesCollection.find({}, { sort: { name: 1 } }).fetch();
+        const userCourses = CoursesCollection.find({}, { sort: { name: 1 }, fields: { name: 1, credits: 1 } }).fetch();
 
-        return { userId, userCourses };
+        const userCoursesLessons = _.chain(userCourses).pluck('_id')
+                        .map((courseId) => {
+                            Meteor.subscribe('courses.specific.withLessons', courseId);
+                            return CoursesCollection.find({ _id: courseId }, {
+                                fields: { name: 1, credits: 1, lessons: 1 }
+                            }).fetch();
+                        }).value();
+
+        // console.log('userCoursesLessons', userCoursesLessons);
+
+        return { userId, userCourses, userCoursesLessons };
     });
 
      const isStudent = () => {
@@ -68,24 +79,44 @@ export const CoursesScreen: FC<StackScreenProps<NavigatorParamList, "courses">> 
         isInstructor();
     }, [userId]);
 
-    const navigateRoute = (item: any) => {
-        if(isUserStudent) {
-            navigation.navigate('courseStudent', { courseId: item._id });
-        }
-        if(isUserInstructor) {
-            navigation.navigate('courseInstructor', { courseId: item._id });
-        }
+    const calculateProgress = (all: string[], attended: string[]) => {
+        const overall = all.length;
+        const present = attended.length;
+
+        return present / overall * 100;
     }
 
     const renderItem = (item: any) => {
+        const lessonIds = _.chain(item).pluck('lessons').flatten(true).pluck('_id').value();
+        const lessonAttendedIds = _.chain(item).pluck('lessons').flatten(true)
+                        .filter((lesson) => {
+                            return _.chain(lesson).get('studentAttendance').findWhere({ _id: userId }).value();
+                        }).pluck('_id').value();
         return (
-            <Pressable onPress={() => navigation.navigate('lessons', { courseId: item._id })}>
+            <Pressable onPress={() => navigation.navigate('lessons', { courseId: item[0]._id })}>
                 <Box bg="#C1DBB3" pl="3" pr="4" py="2" mx="4" my="2" borderRadius="20" shadow="3">
                     <HStack space={3} justifyContent="flex-start" alignItems="center">
                         <MaterialCommunityIcons name="teach" size={32} color="black" />
                         <VStack>
                             <Text fontSize="lg" _dark={{ color: "warmGray.50" }} color="coolGray.800" bold>
-                                {item.name}
+                                {item[0].name}
+                            </Text>
+                            <Box minW="75">
+                                <Progress size="sm" _filledTrack={{ bg: "#006400" }} bg="#FF0000" mt={1}
+                                    value={calculateProgress(lessonIds, lessonAttendedIds)} 
+                                />
+                            </Box>
+                            <Text fontSize="md" color="coolGray.600" _dark={{ color: "warmGray.200" }}>
+                                {lessonAttendedIds.length} out of {lessonIds.length}
+                            </Text>
+                        </VStack>
+                        <Spacer />
+                        <VStack>
+                            <Text fontSize="md" _dark={{ color: "warmGray.50" }} color="coolGray.800" alignSelf="center">
+                                Attendance
+                            </Text>
+                            <Text fontSize="md" _dark={{ color: "warmGray.50" }} color="coolGray.800" bold alignSelf="center">
+                                {calculateProgress(lessonIds, lessonAttendedIds)}%
                             </Text>
                         </VStack>
                     </HStack>
@@ -106,7 +137,7 @@ export const CoursesScreen: FC<StackScreenProps<NavigatorParamList, "courses">> 
                 </HStack>
             </HStack>
 
-            <FlatList data={userCourses} keyExtractor={(item: any) => item._id} renderItem={({ item }) => renderItem(item)} />
+            <FlatList data={userCoursesLessons} keyExtractor={(item: any) => item[0]._id} renderItem={({ item }) => renderItem(item)} />
         </View>
     )
 })

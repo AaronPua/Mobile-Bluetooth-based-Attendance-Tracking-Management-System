@@ -106,7 +106,7 @@ export const LessonsScreen: FC<StackScreenProps<NavigatorParamList, "lessons">> 
                         { isUserStudent && 
                             <VStack>
                                 <Text _dark={{ color: "warmGray.50" }} color="coolGray.800" alignSelf="center">
-                                    Attendance
+                                    Attended
                                 </Text>
                                 <Text _dark={{ color: "warmGray.50" }} color="coolGray.800" alignSelf="center" pt={2}>
                                     { didStudentAttend(item.studentAttendance) ? 
