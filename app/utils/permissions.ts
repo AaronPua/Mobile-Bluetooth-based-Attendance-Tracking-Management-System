@@ -16,14 +16,14 @@ export const requestLocationBluetoothPermissions = async () => {
                     },
                 );
             if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                console.log('[Permissions]', 'Location Permission granted');
+                // console.log('[Permissions]', 'Location Permission granted');
             } else {
-                console.log('[Permissions]', 'Location Permission denied');
+                // console.log('[Permissions]', 'Location Permission denied');
             }
         }
 
         const bluetoothActive = await BLEAdvertiser.getAdapterState().then(result => {
-            console.log('[Bluetooth]', 'Bluetooth Status', result)
+            // console.log('[Bluetooth]', 'Bluetooth Status', result)
                 return result === "STATE_ON";
             }).catch(error => { 
                 console.log('[Bluetooth]', 'Bluetooth Not Enabled', error)

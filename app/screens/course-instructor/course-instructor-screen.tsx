@@ -5,11 +5,12 @@ import { NavigatorParamList } from "../../navigators"
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../../models"
 import { Box, HStack, StatusBar, View, Text, VStack, FlatList, Pressable, Button } from "native-base"
-import { MaterialCommunityIcons, Octicons, FontAwesome5 } from '@expo/vector-icons'
+import { MaterialCommunityIcons, Octicons, FontAwesome5, Ionicons } from '@expo/vector-icons'
 import Meteor from '@meteorrn/core'
-import { BeaconsCollection } from '../../utils/collections'
+import { BeaconsCollection, LessonsCollection } from '../../utils/collections'
 import BLEAdvertiser from 'react-native-ble-advertiser'
 import { requestLocationBluetoothPermissions } from "../../utils/permissions"
+import moment from 'moment';
 
 // STOP! READ ME FIRST!
 // To fix the TS error below, you'll need to add the following things in your navigation config:
@@ -39,18 +40,19 @@ export const CourseInstructorScreen: FC<StackScreenProps<NavigatorParamList, "co
     const [isAdvertising, setIsAdvertising] = useState(false);
     const [elapsedTime, setElapsedTime] = useState(0);
 
-    const { userId, beacons } = Meteor.useTracker(() => {
-        const userId = Meteor.userId();
-
+    const { beacons, lessons } = Meteor.useTracker(() => {
         Meteor.subscribe('beacons.forOneCourse', courseId);
         const beacons = BeaconsCollection.find({ courseId: courseId }, { sort: { name: 1 } }).fetch();
 
-        return { userId, beacons };
+        Meteor.subscribe('lessons.forOneCourse', courseId);
+        const lessons = LessonsCollection.find({ courseId: courseId }, { sort: { name: 1 } }).fetch();
+
+        return { beacons, lessons };
     });
 
     useEffect(() => {
         requestLocationBluetoothPermissions();
-    });
+    }, []);
 
     const startBeaconBroadcast = (uuidString: string, beaconName: string) => {
         const options = {
@@ -71,7 +73,7 @@ export const CourseInstructorScreen: FC<StackScreenProps<NavigatorParamList, "co
                 }, 1000)
             })
             .catch(error => {
-                console.log(uuidString, "Adv Error", error)
+                console.warn(uuidString, "Adv Error", error);
             });
         }
     }
@@ -80,12 +82,12 @@ export const CourseInstructorScreen: FC<StackScreenProps<NavigatorParamList, "co
         if(isAdvertising) {
             BLEAdvertiser.stopBroadcast()
             .then(() => {
-                setIsAdvertising(false)
-                clearInterval(timer.current)
-                setElapsedTime(0)
+                setIsAdvertising(false);
+                clearInterval(timer.current);
+                setElapsedTime(0);
             })
             .catch(error => { 
-                console.log("Stop Broadcast Error", error)
+                console.log("Stop Broadcast Error", error);
             });
         }
     }
@@ -163,7 +165,7 @@ export const CourseInstructorScreen: FC<StackScreenProps<NavigatorParamList, "co
                 </HStack>
             </HStack>
 
-            <FlatList data={beacons} keyExtractor={(item: any) => item._id} renderItem={({ item }) => renderItem(item)} />
+            <FlatList data={lessons} keyExtractor={(item: any) => item._id} renderItem={({ item }) => renderItem(item)} />
         </View>
     )
 })

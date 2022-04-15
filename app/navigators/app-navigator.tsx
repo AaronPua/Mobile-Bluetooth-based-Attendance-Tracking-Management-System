@@ -9,7 +9,7 @@ import { useColorScheme } from "react-native"
 import { NavigationContainer, DefaultTheme, DarkTheme } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import { WelcomeScreen, DemoScreen, DemoListScreen, BroadcastScreen, 
-    ScanScreen, LoginScreen, CoursesScreen, CourseStudentScreen, CourseInstructorScreen } from "../screens"
+    ScanScreen, LoginScreen, CoursesScreen, CourseStudentScreen, CourseInstructorScreen, LessonsScreen} from "../screens"
 import { navigationRef, useBackButtonHandler } from "./navigation-utilities"
 
 /**
@@ -29,10 +29,11 @@ export type NavigatorParamList = {
   demo: undefined
   demoList: undefined
   // 🔥 Your screens go here
-  broadcast: undefined
-  scan: undefined
+  broadcast: { courseId: string, lessonId: string } | undefined
+  scan: { courseId: string, lessonId: string } | undefined
   login: undefined
   courses: undefined
+  lessons: { courseId: string } | undefined
   courseStudent: { courseId: string } | undefined
   courseInstructor: { courseId: string } | undefined
 }
@@ -53,11 +54,12 @@ const AppStack = () => {
       {/* <Stack.Screen name="demoList" component={DemoListScreen} /> */}
       {/** 🔥 Your screens go here */}
       <Stack.Screen name="login" component={LoginScreen} />
-      {/* <Stack.Screen name="broadcast" component={BroadcastScreen} /> */}
-      {/* <Stack.Screen name="scan" component={ScanScreen} /> */}
+      <Stack.Screen name="broadcast" component={BroadcastScreen} />
+      <Stack.Screen name="scan" component={ScanScreen} />
       <Stack.Screen name="courses" component={CoursesScreen} />
       <Stack.Screen name="courseStudent" component={CourseStudentScreen} />
       <Stack.Screen name="courseInstructor" component={CourseInstructorScreen} />
+      <Stack.Screen name="lessons" component={LessonsScreen} />
     </Stack.Navigator>
   )
 }

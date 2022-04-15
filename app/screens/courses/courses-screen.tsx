@@ -66,7 +66,7 @@ export const CoursesScreen: FC<StackScreenProps<NavigatorParamList, "courses">> 
     useEffect(() => {
         isStudent();
         isInstructor();
-    });
+    }, [userId]);
 
     const navigateRoute = (item: any) => {
         if(isUserStudent) {
@@ -79,7 +79,7 @@ export const CoursesScreen: FC<StackScreenProps<NavigatorParamList, "courses">> 
 
     const renderItem = (item: any) => {
         return (
-            <Pressable onPress={() => navigateRoute(item)}>
+            <Pressable onPress={() => navigation.navigate('lessons', { courseId: item._id })}>
                 <Box bg="#C1DBB3" pl="3" pr="4" py="2" mx="4" my="2" borderRadius="20" shadow="3">
                     <HStack space={3} justifyContent="flex-start" alignItems="center">
                         <MaterialCommunityIcons name="teach" size={32} color="black" />
@@ -101,7 +101,7 @@ export const CoursesScreen: FC<StackScreenProps<NavigatorParamList, "courses">> 
             <HStack bg="#6200ee" px="3" py="3" justifyContent="space-between" alignItems="center" w="100%">
                 <HStack alignItems="center">
                     <Text color="white" fontSize="20" fontWeight="bold">
-                        COMP8047
+                        Courses
                     </Text>
                 </HStack>
             </HStack>

@@ -1,21 +1,17 @@
-/* eslint-disable react-native/no-color-literals */
-/* eslint-disable react-native/no-unused-styles */
-/* eslint-disable react-native/no-inline-styles */
 import React, { FC, useEffect, useState } from "react"
 import { observer } from "mobx-react-lite"
 import { NativeEventEmitter, NativeModules } from "react-native"
 import { StackScreenProps } from "@react-navigation/stack"
 import { NavigatorParamList } from "../../navigators"
-// import { Screen, Text } from "../../components"
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../../models"
-import { Box, HStack, VStack, Text, FlatList, View, StatusBar, Center, Button, Spacer, Pressable, Icon, IconButton } from 'native-base'
+import { Box, HStack, VStack, Text, FlatList, View, StatusBar, Button, Spacer, IconButton, useToast } from 'native-base'
 import { MaterialIcons, Ionicons } from '@expo/vector-icons'
 import { requestLocationBluetoothPermissions } from "../../utils/permissions"
-
+import { BeaconsCollection } from "../../utils/collections"
+import Meteor from '@meteorrn/core'
 import BleManager from 'react-native-ble-manager'
-const BleManagerModule = NativeModules.BleManager
-const bleEmitter = new NativeEventEmitter(BleManagerModule)
+import _ from 'underscore';
 
 // STOP! READ ME FIRST!
 // To fix the TS error below, you'll need to add the following things in your navigation config:
@@ -26,33 +22,47 @@ const bleEmitter = new NativeEventEmitter(BleManagerModule)
 
 // REMOVE ME! ⬇️ This TS ignore will not be necessary after you've added the correct navigator param type
 // @ts-ignore
-export const ScanScreen: FC<StackScreenProps<NavigatorParamList, "scan">> = observer(function ScanScreen() {
+export const ScanScreen: FC<StackScreenProps<NavigatorParamList, "scan">> = observer(function ScanScreen({ route }) {
     // Pull in one of our MST stores
     // const { someStore, anotherStore } = useStores()
 
     // Pull in navigation via hook
     // const navigation = useNavigation()
 
+    const BleManagerModule = NativeModules.BleManager;
+    const bleEmitter = new NativeEventEmitter(BleManagerModule);
+    const toast = useToast();
+
+    const { courseId, lessonId } = route.params;
+
     const [isScanning, setIsScanning] = useState(false);
     const scannedDevices = new Map();
     const [devicesList, setDevicesList] = useState([]);
 
-    const [selected, setSelected] = React.useState(1);
+    const { userId, beaconUUIDs } = Meteor.useTracker(() => {
+        const userId = Meteor.userId();
+
+        Meteor.subscribe('beacons.forOneCourse', courseId);
+        const beacons = BeaconsCollection.find({ courseId: courseId }, { sort: { name: 1 } }).fetch();
+        const beaconUUIDs = _.pluck(beacons, 'uuid');
+
+        return { userId, beaconUUIDs };
+    });
 
     const initModule = () => {
         BleManager.start({ showAlert: true })
         .then(() => {
             console.log('BleManager module initialized')
-        })
+        });
     }
 
-    const startScan = async () => {
+    const startScan = async (beaconUUIDs: string[]) => {
         if (!isScanning) {
             clearScannedDevices();
 
             await BleManager.scan([], 5, true)
             .then(() => {
-                console.log('Scanning...');
+                toast.show({ description: 'Scanning Started', duration: 2000 });
                 setIsScanning(true);
             })
             .catch((err) => {
@@ -64,7 +74,7 @@ export const ScanScreen: FC<StackScreenProps<NavigatorParamList, "scan">> = obse
     const stopScanning = async () => {
         await BleManager.stopScan()
         .then(() => {
-            console.log('Manually Stop Scan');
+            toast.show({ description: 'Scanning Stopped', duration: 3000 });
         });
     }
 
@@ -74,13 +84,11 @@ export const ScanScreen: FC<StackScreenProps<NavigatorParamList, "scan">> = obse
     }
 
     const handleStopScan = () => {
-        console.log('Scan is stopped');
+        toast.show({ description: 'Scanning Stopped' });
         setIsScanning(false);
     }
 
-    const handleScannedDevices = (device) => {
-        // console.log('Got ble peripheral', device);
-
+    const handleScannedDevices = (device: { name: string; id: string }) => {
         if (!device.name) {
             device.name = 'N/A';
         }
@@ -89,7 +97,7 @@ export const ScanScreen: FC<StackScreenProps<NavigatorParamList, "scan">> = obse
         setDevicesList(Array.from(scannedDevices.values()));
     }
 
-    const getDeviceName = (device: any) => {
+    const getDeviceName = (device: { advertising: { localName: string }; name: string }) => {
         if (device.advertising) {
             if (device.advertising.localName) {
                 return device.advertising.localName;
@@ -98,22 +106,22 @@ export const ScanScreen: FC<StackScreenProps<NavigatorParamList, "scan">> = obse
         return device.name;
     }
 
-    const truncateString = (str: any, num: any) => {
+    const truncateString = (str: string, num: number) => {
         return (str != null && str.length > num) ? str.slice(0, num) + "..." : str;
     }
 
     useEffect(() => {
         requestLocationBluetoothPermissions();
-        initModule()
+        initModule();
         // add ble listeners on mount
-        bleEmitter.addListener('BleManagerDiscoverPeripheral', handleScannedDevices);
-        bleEmitter.addListener('BleManagerStopScan', handleStopScan);
+        const discoverDeviceSub = bleEmitter.addListener('BleManagerDiscoverPeripheral', handleScannedDevices);
+        const stopScanSub = bleEmitter.addListener('BleManagerStopScan', handleStopScan);
 
         // remove ble listeners on unmount
         return () => {
             console.log('Unmount');
-            bleEmitter.removeListener('BleManagerDiscoverPeripheral', handleScannedDevices);
-            bleEmitter.removeListener('BleManagerStopScan', handleStopScan);
+            discoverDeviceSub.remove();
+            stopScanSub.remove();
         };
     }, [])
 
@@ -158,18 +166,18 @@ export const ScanScreen: FC<StackScreenProps<NavigatorParamList, "scan">> = obse
             <HStack bg="#6200ee" px="3" py="3" justifyContent="space-between" alignItems="center" w="100%">
                 <HStack alignItems="center">
                     <Text color="white" fontSize="20" fontWeight="bold">
-                        COMP8047
+                        Check-in
                     </Text>
                 </HStack>
                 <HStack alignItems="center">
-                    <IconButton icon={<Ionicons name="trash-outline" color="white" />} _icon={{ size: 27 }} onPress={() => clearScannedDevices()}/>
+                    <IconButton icon={<Ionicons name="trash-outline" color="white" />} _icon={{ size: 28 }} onPress={() => clearScannedDevices()}/>
                     { isScanning ?  ( 
                         <Button bg="#6200ee" size="md" onPress={() => stopScanning()} _pressed={{ bg: "#818cf8" }}>
                             <Text color="white" fontSize="16">
                                 Stop
                             </Text>
                         </Button> )
-                        : ( <Button bg="#6200ee" size="md" onPress={() => startScan()} _pressed={{ bg: "#818cf8" }}>
+                        : ( <Button bg="#6200ee" size="md" onPress={() => startScan(beaconUUIDs)} _pressed={{ bg: "#818cf8" }}>
                             <Text color="white" fontSize="16">
                                 Scan
                             </Text>
@@ -180,41 +188,6 @@ export const ScanScreen: FC<StackScreenProps<NavigatorParamList, "scan">> = obse
             </HStack>
 
             <FlatList data={devicesList} keyExtractor={item => item.id} renderItem={({ item }) => renderItem(item)} />
-
-            <HStack bg="indigo.600" alignItems="center" safeAreaBottom shadow={6} bottom={0}>
-                <Pressable opacity={selected === 0 ? 1 : 0.5} py="3" flex={1} onPress={() => setSelected(0)}>
-                    <Center>
-                    {/* <Icon mb="1" as={<MaterialCommunityIcons name={selected === 0 ? "home" : "home-outline"} />} color="white" size="sm" /> */}
-                    <Text color="white" fontSize="12">
-                        Home
-                    </Text>
-                    </Center>
-                </Pressable>
-                <Pressable opacity={selected === 1 ? 1 : 0.5} py="2" flex={1} onPress={() => setSelected(1)}>
-                    <Center>
-                    <Icon mb="1" as={<MaterialIcons name="search" />} color="white" size="sm" />
-                    <Text color="white" fontSize="12">
-                        Search
-                    </Text>
-                    </Center>
-                </Pressable>
-                <Pressable opacity={selected === 2 ? 1 : 0.6} py="2" flex={1} onPress={() => setSelected(2)}>
-                    <Center>
-                    {/* <Icon mb="1" as={<MaterialCommunityIcons name={selected === 2 ? "cart" : "cart-outline"} />} color="white" size="sm" /> */}
-                    <Text color="white" fontSize="12">
-                        Cart
-                    </Text>
-                    </Center>
-                </Pressable>
-                <Pressable opacity={selected === 3 ? 1 : 0.5} py="2" flex={1} onPress={() => setSelected(3)}>
-                    <Center>
-                    {/* <Icon mb="1" as={<MaterialCommunityIcons name={selected === 3 ? "account" : "account-outline"} />} color="white" size="sm" /> */}
-                    <Text color="white" fontSize="12">
-                        Account
-                    </Text>
-                    </Center>
-                </Pressable>
-            </HStack>
         </View>
     )
 })
