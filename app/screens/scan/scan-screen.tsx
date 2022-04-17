@@ -5,10 +5,10 @@ import { StackScreenProps } from "@react-navigation/stack"
 import { NavigatorParamList } from "../../navigators"
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../../models"
-import { Box, HStack, VStack, Text, FlatList, View, StatusBar, Button, Spacer, IconButton, useToast } from 'native-base'
-import { MaterialIcons, Ionicons } from '@expo/vector-icons'
+import { Box, HStack, VStack, Text, FlatList, View, StatusBar, Button, Spacer, IconButton, useToast, Pressable } from 'native-base'
+import { MaterialIcons, Ionicons, Feather, MaterialCommunityIcons } from '@expo/vector-icons'
 import { requestLocationBluetoothPermissions } from "../../utils/permissions"
-import { BeaconsCollection } from "../../utils/collections"
+import { BeaconsCollection, LessonsCollection } from "../../utils/collections"
 import Meteor from '@meteorrn/core'
 import BleManager from 'react-native-ble-manager'
 import _ from 'underscore';
@@ -35,18 +35,25 @@ export const ScanScreen: FC<StackScreenProps<NavigatorParamList, "scan">> = obse
 
     const { courseId, lessonId } = route.params;
 
-    const [isScanning, setIsScanning] = useState(false);
     const scannedDevices = new Map();
+    const [isScanning, setIsScanning] = useState(false);
     const [devicesList, setDevicesList] = useState([]);
 
-    const { userId, beaconUUIDs } = Meteor.useTracker(() => {
+    const [activeItemIndex, setActiveItemIndex] = useState('');
+    const [showCheckIn, setShowCheckIn] = useState(false);
+
+    const { userId, beaconUUIDs, didStudentAttend } = Meteor.useTracker(() => {
         const userId = Meteor.userId();
 
         Meteor.subscribe('beacons.forOneCourse', courseId);
         const beacons = BeaconsCollection.find({ courseId: courseId }, { sort: { name: 1 } }).fetch();
         const beaconUUIDs = _.pluck(beacons, 'uuid');
 
-        return { userId, beaconUUIDs };
+        Meteor.subscribe('lessons.specific', lessonId);
+        const lesson = LessonsCollection.find({ _id: lessonId }, { fields: { studentAttendance: 1 } }).fetch();
+        const didStudentAttend = _.chain(lesson).pluck('studentAttendance').flatten(true).pluck('_id').contains(userId).value();
+
+        return { userId, beaconUUIDs, didStudentAttend };
     });
 
     const initModule = () => {
@@ -60,7 +67,7 @@ export const ScanScreen: FC<StackScreenProps<NavigatorParamList, "scan">> = obse
         if (!isScanning) {
             clearScannedDevices();
 
-            await BleManager.scan([], 5, true)
+            await BleManager.scan(beaconUUIDs, 5, true)
             .then(() => {
                 toast.show({ description: 'Scanning Started', duration: 2000 });
                 setIsScanning(true);
@@ -125,42 +132,83 @@ export const ScanScreen: FC<StackScreenProps<NavigatorParamList, "scan">> = obse
         };
     }, [])
 
+    const showCheckInButton = (index: string) => {
+        setShowCheckIn(prev => !prev);
+        setActiveItemIndex(index);
+    }
+
+    const updateAttendance = (lessonId: string, studentId: string, action: string) => {
+        Meteor.call('lesson.updateAttendance', { 
+            lessonId: lessonId,
+            studentId: studentId,
+            action: action
+        }, (error: any) => {
+            if(error) {
+                console.log(error);
+            } else {
+                toast.show({
+                    description: 'Attendance Checked-in!'
+                });
+            }
+        });
+    }
+
     // render list of devices
     const renderItem = (item: any) => {
         return (
-            <Box bg="#C1DBB3" pl="3" pr="4" py="2" mx="4" my="2" borderRadius="20" shadow="3">
-                <HStack space={3} justifyContent="space-between" alignItems="center">
-                    <MaterialIcons name="bluetooth-searching" size={32} color="black" />
-                    <VStack>
-                        <Text _dark={{ color: "warmGray.50" }} color="coolGray.800" bold>
-                            {getDeviceName(item)}
-                        </Text>
-                        <Text color="coolGray.600" _dark={{ color: "warmGray.200" }}>
-                            id: {truncateString(item.id, 20)}
-                        </Text>
-                        { item.advertising.serviceUUIDs != null &&
-                            item.advertising.serviceUUIDs[0] != null &&
-                            <Text color="coolGray.600" _dark={{ color: "warmGray.200" }}>
-                                uuid: {truncateString(item.advertising.serviceUUIDs[0], 20)}
+            <Pressable onPress={() => showCheckInButton(item.id)} key={item.id}>
+                <Box bg="#C1DBB3" pl="3" pr="4" py="2" mx="4" my="2" borderRadius="20" shadow="3">
+                    <HStack space={3} justifyContent="space-between" alignItems="center">
+                        <MaterialIcons name="bluetooth-searching" size={32} color="black" />
+                        <VStack>
+                            <Text color="coolGray.800" bold>
+                                {getDeviceName(item)}
                             </Text>
-                        }
-                    </VStack>
-                    <Spacer />
-                    <VStack>
-                        <Text _dark={{ color: "warmGray.50" }} color="coolGray.800" alignSelf="flex-start">
-                            RSSI
-                        </Text>
-                        <Text _dark={{ color: "warmGray.50" }} color="coolGray.800" alignSelf="flex-start">
-                            {item.rssi}
-                        </Text>
-                    </VStack>
-                </HStack>
-            </Box>
+                            <Text color="coolGray.600">
+                                id: {truncateString(item.id, 20)}
+                            </Text>
+                            { item.advertising.serviceUUIDs != null &&
+                                item.advertising.serviceUUIDs[0] != null &&
+                                <Text color="coolGray.600">
+                                    uuid: {truncateString(item.advertising.serviceUUIDs[0], 20)}
+                                </Text>
+                            }
+                        </VStack>
+                        <Spacer />
+                        <VStack>
+                            <Text color="coolGray.800" alignSelf="flex-start">
+                                RSSI
+                            </Text>
+                            <Text color="coolGray.800" alignSelf="flex-start">
+                                {item.rssi}
+                            </Text>
+                        </VStack>
+                    </HStack>
+                    { showCheckIn && activeItemIndex === item.id &&
+                        <Box bg="#FAEDCA" pl="3" pr="4" py="2" mx="4" my="2" borderRadius="20" shadow="3">
+                            <HStack space={3} justifyContent="flex-start" alignItems="center">
+                                <Feather name="user-check" size={24} color="black" />
+                                <VStack>
+                                    <VStack justifyContent="space-between">
+                                        <Text fontSize="md" color="coolGray.800" bold>
+                                            Attendance
+                                        </Text>
+                                    </VStack>
+                                
+                                    <HStack space={3} my={3} justifyContent="flex-start">
+                                       <Button colorScheme="info" onPress={() => updateAttendance(lessonId, userId, 'add')}>Check-in</Button>
+                                    </HStack>
+                                </VStack>
+                            </HStack>
+                        </Box>
+                    }
+                </Box>
+            </Pressable>
         )
     }
 
     return (
-        <View backgroundColor="white" flex="1">
+        <View backgroundColor="blueGray.100" flex="1">
             <StatusBar backgroundColor="black" barStyle="light-content" />
             <Box safeAreaTop bg="#6200ee" />
             <HStack bg="#6200ee" px="3" py="3" justifyContent="space-between" alignItems="center" w="100%">
@@ -186,6 +234,19 @@ export const ScanScreen: FC<StackScreenProps<NavigatorParamList, "scan">> = obse
                     
                 </HStack>
             </HStack>
+
+            <Box bg="blueGray.300" pl="3" pr="4" py="3" mx="4" my="2" borderRadius="20" shadow="3">
+                <HStack space={3} justifyContent="space-between" alignItems="center">
+                    <Text fontSize="lg" color="coolGray.800" bold>
+                        Current Attendance:      
+                    </Text>
+                    { didStudentAttend ? 
+                        <MaterialCommunityIcons name="check-circle" size={24} color="darkgreen" />
+                        :
+                        <MaterialCommunityIcons name="close-circle" size={24} color="red" />
+                    }
+                </HStack>
+            </Box>
 
             <FlatList data={devicesList} keyExtractor={item => item.id} renderItem={({ item }) => renderItem(item)} />
         </View>

@@ -54,12 +54,12 @@ const AppStack = () => {
       {/* <Stack.Screen name="demoList" component={DemoListScreen} /> */}
       {/** 🔥 Your screens go here */}
       <Stack.Screen name="login" component={LoginScreen} />
-      <Stack.Screen name="broadcast" component={BroadcastScreen} />
-      <Stack.Screen name="scan" component={ScanScreen} />
       <Stack.Screen name="courses" component={CoursesScreen} />
       <Stack.Screen name="courseStudent" component={CourseStudentScreen} />
       <Stack.Screen name="courseInstructor" component={CourseInstructorScreen} />
       <Stack.Screen name="lessons" component={LessonsScreen} />
+      <Stack.Screen name="broadcast" component={BroadcastScreen} />
+      <Stack.Screen name="scan" component={ScanScreen} />
     </Stack.Navigator>
   )
 }

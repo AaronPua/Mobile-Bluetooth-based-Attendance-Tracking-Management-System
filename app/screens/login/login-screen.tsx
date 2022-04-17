@@ -57,7 +57,7 @@ export const LoginScreen: FC<StackScreenProps<NavigatorParamList, "login">> = ob
     }
 
     return (
-        <View backgroundColor="white" flex="1">
+        <View backgroundColor="blueGray.100" flex="1">
             <StatusBar backgroundColor="black" barStyle="light-content" />
             <Box safeAreaTop bg="#6200ee" />
             <HStack bg="#6200ee" px="3" py="3" justifyContent="space-between" alignItems="center" w="100%">

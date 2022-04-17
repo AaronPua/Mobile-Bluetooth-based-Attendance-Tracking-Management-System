@@ -5,7 +5,7 @@ import { NavigatorParamList } from "../../navigators"
 import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../../models"
 import { Box, HStack, StatusBar, View, Text, VStack, FlatList, Pressable, Spacer } from "native-base"
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
 import Meteor from '@meteorrn/core'
 import { LessonsCollection } from '../../utils/collections'
 import moment from 'moment';
@@ -85,30 +85,59 @@ export const LessonsScreen: FC<StackScreenProps<NavigatorParamList, "lessons">> 
         return _.chain(studentAttendance).flatten(true).pluck('_id').contains(userId).value();
     }
 
+    const calculateLessonTime = (lesson: any) => {
+        if(moment().isAfter(lesson.endTime)) {
+            return (
+                <Text fontSize="sm" color="coolGray.500" alignSelf="center" minW={10}>
+                    Done
+                </Text>
+            )
+        }
+        else if(moment().isBefore(lesson.startTime)) {
+            return (
+                <Text fontSize="sm" color="coolGray.800" alignSelf="center" minW={10}>
+                    Future
+                </Text>
+            )
+        }
+        else {
+            return (
+                <Text fontSize="lg" color="darkgreen" alignSelf="center" minW={10} bold>
+                    Now
+                </Text>
+            )
+        }
+    }
+
+    const isLessonNow = (lesson: any) => {
+        return moment().isBetween(lesson.startTime, lesson.endTime);
+    }
+
     const renderItem = (item: any) => {
         return (
-            <Pressable onPress={() => navigateRoute(item)}>
-                <Box bg="#C1DBB3" pl="3" pr="4" py="2" mx="4" my="2" borderRadius="20" shadow="3">
+            <Pressable onPress={() => navigateRoute(item)} disabled={!isLessonNow(item)}>
+                <Box bg={isLessonNow(item) ? "#C1DBB3" : "coolGray.300"} pl="3" pr="4" py="2" mx="4" my="2" borderRadius="20" shadow="3">
                     <HStack space={3} justifyContent="flex-start" alignItems="center">
-                        <Ionicons name="school-outline" size={24} color="black" />
+                        {/* <Ionicons name="school-outline" size={24} color="black" /> */}
+                        { calculateLessonTime(item) }
                         <VStack>
-                            <Text fontSize="lg" _dark={{ color: "warmGray.50" }} color="coolGray.800" bold>
+                            <Text fontSize="lg" color="coolGray.800" bold>
                                 {item.name}
                             </Text>
-                            <Text color="coolGray.600" _dark={{ color: "warmGray.200" }}>
-                                from {moment(item.startTime).format('HH:mm')} to {moment(item.endTime).format('HH:mm')}
+                            <Text color="coolGray.600">
+                                {moment.utc(item.startTime).format('HH:mm')} to {moment.utc(item.endTime).format('HH:mm')}
                             </Text>
-                            <Text color="coolGray.600" _dark={{ color: "warmGray.200" }}>
-                                on {moment(item.createdAt).format('dddd, DD/MM/YYYY')}
+                            <Text color="coolGray.600">
+                                {moment.utc(item.date).format('ddd, DD/MM/YYYY')}
                             </Text>
                         </VStack>
                         { isUserStudent && <Spacer /> }
                         { isUserStudent && 
                             <VStack>
-                                <Text _dark={{ color: "warmGray.50" }} color="coolGray.800" alignSelf="center">
+                                <Text color="coolGray.800" alignSelf="center">
                                     Attended
                                 </Text>
-                                <Text _dark={{ color: "warmGray.50" }} color="coolGray.800" alignSelf="center" pt={2}>
+                                <Text color="coolGray.800" alignSelf="center" pt={2}>
                                     { didStudentAttend(item.studentAttendance) ? 
                                         <MaterialCommunityIcons name="check-circle" size={24} color="darkgreen" /> 
                                         : 
@@ -117,6 +146,10 @@ export const LessonsScreen: FC<StackScreenProps<NavigatorParamList, "lessons">> 
                                 </Text>
                             </VStack>
                         }
+                        { isLessonNow(item) && <Spacer /> }
+                        { isLessonNow(item) && 
+                            <MaterialCommunityIcons name="arrow-right" size={24} color="black" /> 
+                        }
                     </HStack>
                 </Box>
             </Pressable>
@@ -124,18 +157,18 @@ export const LessonsScreen: FC<StackScreenProps<NavigatorParamList, "lessons">> 
     }
 
     return (
-        <View backgroundColor="white" flex="1">
-                <StatusBar backgroundColor="black" barStyle="light-content" />
-                <Box safeAreaTop bg="#6200ee" />
-                <HStack bg="#6200ee" px="3" py="3" justifyContent="space-between" alignItems="center" w="100%">
-                    <HStack alignItems="center">
-                        <Text color="white" fontSize="20" fontWeight="bold">
-                            Lessons
-                        </Text>
-                    </HStack>
+        <View backgroundColor="blueGray.100" flex="1">
+            <StatusBar backgroundColor="black" barStyle="light-content" />
+            <Box safeAreaTop bg="#6200ee" />
+            <HStack bg="#6200ee" px="3" py="3" justifyContent="space-between" alignItems="center" w="100%">
+                <HStack alignItems="center">
+                    <Text color="white" fontSize="20" fontWeight="bold">
+                        Lessons
+                    </Text>
                 </HStack>
+            </HStack>
 
-                <FlatList data={lessons} keyExtractor={(item: any) => item._id} renderItem={({ item }) => renderItem(item)} />
-            </View>
+            <FlatList data={lessons} keyExtractor={(item: any) => item._id} renderItem={({ item }) => renderItem(item)} />
+        </View>
     )
 })

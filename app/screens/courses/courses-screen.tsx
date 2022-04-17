@@ -5,7 +5,7 @@ import { NavigatorParamList } from "../../navigators"
 import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../../models"
 import { Box, HStack, StatusBar, View, Text, VStack, FlatList, Pressable, Progress, Spacer } from "native-base"
-import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { MaterialCommunityIcons, Octicons } from '@expo/vector-icons'
 import Meteor from '@meteorrn/core'
 import { CoursesCollection } from '../../utils/collections'
 import _ from 'underscore';
@@ -98,27 +98,39 @@ export const CoursesScreen: FC<StackScreenProps<NavigatorParamList, "courses">> 
                     <HStack space={3} justifyContent="flex-start" alignItems="center">
                         <MaterialCommunityIcons name="teach" size={32} color="black" />
                         <VStack>
-                            <Text fontSize="lg" _dark={{ color: "warmGray.50" }} color="coolGray.800" bold>
+                            <Text fontSize="lg" color="coolGray.800" bold>
                                 {item[0].name}
                             </Text>
-                            <Box minW="75">
-                                <Progress size="sm" _filledTrack={{ bg: "#006400" }} bg="#FF0000" mt={1}
-                                    value={calculateProgress(lessonIds, lessonAttendedIds)} 
-                                />
-                            </Box>
-                            <Text fontSize="md" color="coolGray.600" _dark={{ color: "warmGray.200" }}>
-                                {lessonAttendedIds.length} out of {lessonIds.length}
-                            </Text>
+                            { isUserStudent && 
+                                <Box minW="75">
+                                    <Progress size="sm" _filledTrack={{ bg: "#006400" }} bg="#FF0000" mt={1}
+                                        value={calculateProgress(lessonIds, lessonAttendedIds)} />
+                                </Box>
+                            }
+                            { isUserStudent && 
+                                <Text fontSize="md" color="coolGray.600">
+                                    {lessonAttendedIds.length} out of {lessonIds.length}
+                                </Text>
+                            }
+                            { isUserInstructor && 
+                                <Text fontSize="md" color="coolGray.600">
+                                    {lessonIds.length} {lessonIds.length === 1 ? 'lesson' : 'lessons'}
+                                </Text>
+                            }
                         </VStack>
+                        { isUserStudent && <Spacer /> }
+                        { isUserStudent && 
+                            <VStack>
+                                <Text fontSize="md" color="coolGray.800" alignSelf="center">
+                                    Attendance
+                                </Text>
+                                <Text fontSize="md" color="coolGray.800" bold alignSelf="center">
+                                    {calculateProgress(lessonIds, lessonAttendedIds)}%
+                                </Text>
+                            </VStack>
+                        }
                         <Spacer />
-                        <VStack>
-                            <Text fontSize="md" _dark={{ color: "warmGray.50" }} color="coolGray.800" alignSelf="center">
-                                Attendance
-                            </Text>
-                            <Text fontSize="md" _dark={{ color: "warmGray.50" }} color="coolGray.800" bold alignSelf="center">
-                                {calculateProgress(lessonIds, lessonAttendedIds)}%
-                            </Text>
-                        </VStack>
+                        <MaterialCommunityIcons name="arrow-right" size={24} color="black" />
                     </HStack>
                 </Box>
             </Pressable>
@@ -126,7 +138,7 @@ export const CoursesScreen: FC<StackScreenProps<NavigatorParamList, "courses">> 
     }
 
     return (
-        <View backgroundColor="white" flex="1">
+        <View backgroundColor="blueGray.100" flex="1">
             <StatusBar backgroundColor="black" barStyle="light-content" />
             <Box safeAreaTop bg="#6200ee" />
             <HStack bg="#6200ee" px="3" py="3" justifyContent="space-between" alignItems="center" w="100%">
