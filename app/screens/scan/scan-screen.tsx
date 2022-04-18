@@ -5,7 +5,7 @@ import { StackScreenProps } from "@react-navigation/stack"
 import { NavigatorParamList } from "../../navigators"
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../../models"
-import { Box, HStack, VStack, Text, FlatList, View, StatusBar, Button, Spacer, IconButton, useToast, Pressable } from 'native-base'
+import { Box, HStack, VStack, Text, FlatList, View, StatusBar, Button, Spacer, IconButton, useToast, Pressable, Modal } from 'native-base'
 import { MaterialIcons, Ionicons, Feather, MaterialCommunityIcons } from '@expo/vector-icons'
 import { requestLocationBluetoothPermissions } from "../../utils/permissions"
 import { BeaconsCollection, LessonsCollection } from "../../utils/collections"
@@ -41,6 +41,7 @@ export const ScanScreen: FC<StackScreenProps<NavigatorParamList, "scan">> = obse
 
     const [activeItemIndex, setActiveItemIndex] = useState('');
     const [showCheckIn, setShowCheckIn] = useState(false);
+    const [showModal, setShowModal] = useState(false);
 
     const { userId, beaconUUIDs, didStudentAttend } = Meteor.useTracker(() => {
         const userId = Meteor.userId();
@@ -227,6 +228,22 @@ export const ScanScreen: FC<StackScreenProps<NavigatorParamList, "scan">> = obse
                     </Text>
                 </HStack>
                 <HStack alignItems="center">
+                    <IconButton icon={<Ionicons name="information-circle-outline" color="white" />} _icon={{ size: 28 }} onPress={() => setShowModal(true)}/>
+                    <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+                        <Modal.Content maxWidth="400px">
+                            <Modal.CloseButton />
+                            <Modal.Header>Check-in Info</Modal.Header>
+                            <Modal.Body>
+                                <Text fontSize="md" color="coolGray.800">
+                                    You have to authenticate yourself before checking-in.
+                                    {'\n'}
+                                </Text>
+                                <Text fontSize="md" color="coolGray.800">
+                                    Please talk to your instructor if there are any issues with the process.
+                                </Text>
+                            </Modal.Body>
+                        </Modal.Content>
+                    </Modal>
                     <IconButton icon={<Ionicons name="trash-outline" color="white" />} _icon={{ size: 28 }} onPress={() => clearScannedDevices()}/>
                     { isScanning ?  ( 
                         <Button bg="#6200ee" size="md" onPress={() => stopScanning()} _pressed={{ bg: "#818cf8" }}>
@@ -254,13 +271,6 @@ export const ScanScreen: FC<StackScreenProps<NavigatorParamList, "scan">> = obse
                         <MaterialCommunityIcons name="close-circle" size={24} color="red" />
                     }
                 </HStack>
-            </Box>
-
-            <Box bg="blueGray.300" pl="3" pr="4" py="3" mx="4" my="2" borderRadius="20" shadow="3">
-                <Text fontSize="md" color="coolGray.800">
-                    You have to authenticate yourself before checking-in. 
-                    Please talk to your instructor if there are any issues with the process.
-                </Text>
             </Box>
 
             <FlatList data={devicesList} keyExtractor={item => item.id} renderItem={({ item }) => renderItem(item)} />
