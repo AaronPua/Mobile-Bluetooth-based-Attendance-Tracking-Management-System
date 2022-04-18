@@ -121,6 +121,7 @@ export const ScanScreen: FC<StackScreenProps<NavigatorParamList, "scan">> = obse
     useEffect(() => {
         requestLocationBluetoothPermissions();
         initModule();
+        setShowModal(true);
         // add ble listeners on mount
         const discoverDeviceSub = bleEmitter.addListener('BleManagerDiscoverPeripheral', handleScannedDevices);
         const stopScanSub = bleEmitter.addListener('BleManagerStopScan', handleStopScan);
@@ -232,9 +233,13 @@ export const ScanScreen: FC<StackScreenProps<NavigatorParamList, "scan">> = obse
                     <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
                         <Modal.Content maxWidth="400px">
                             <Modal.CloseButton />
-                            <Modal.Header>Check-in Info</Modal.Header>
+                            <Modal.Header>Check-in Process</Modal.Header>
                             <Modal.Body>
                                 <Text fontSize="md" color="coolGray.800">
+                                    First, click "Scan" and wait for the instructor's Bluetooth Beacon to show up.
+                                    {'\n'}{'\n'}
+                                    Next, click on the tile to show the "Check-in" button.
+                                    {'\n'}{'\n'}
                                     You have to authenticate yourself before checking-in.
                                     {'\n'}
                                 </Text>
