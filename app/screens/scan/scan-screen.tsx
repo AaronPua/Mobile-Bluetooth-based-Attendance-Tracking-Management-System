@@ -12,6 +12,7 @@ import { BeaconsCollection, LessonsCollection } from "../../utils/collections"
 import Meteor from '@meteorrn/core'
 import BleManager from 'react-native-ble-manager'
 import _ from 'underscore';
+import * as LocalAuthentication from 'expo-local-authentication';
 
 // STOP! READ ME FIRST!
 // To fix the TS error below, you'll need to add the following things in your navigation config:
@@ -19,7 +20,6 @@ import _ from 'underscore';
 // - Import your screen, and add it to the stack:
 //     `<Stack.Screen name="scan" component={ScanScreen} />`
 // Hint: Look for the 🔥!
-
 // REMOVE ME! ⬇️ This TS ignore will not be necessary after you've added the correct navigator param type
 // @ts-ignore
 export const ScanScreen: FC<StackScreenProps<NavigatorParamList, "scan">> = observer(function ScanScreen({ route }) {
@@ -137,20 +137,29 @@ export const ScanScreen: FC<StackScreenProps<NavigatorParamList, "scan">> = obse
         setActiveItemIndex(index);
     }
 
-    const updateAttendance = (lessonId: string, studentId: string, action: string) => {
-        Meteor.call('lesson.updateAttendance', { 
-            lessonId: lessonId,
-            studentId: studentId,
-            action: action
-        }, (error: any) => {
-            if(error) {
-                console.log(error);
-            } else {
-                toast.show({
-                    description: 'Attendance Checked-in!'
-                });
-            }
-        });
+    const updateAttendance = async (lessonId: string, studentId: string, action: string) => {
+        const result = await LocalAuthentication.authenticateAsync();
+        if(result.success) {
+            Meteor.call('lesson.updateAttendance', { 
+                lessonId: lessonId,
+                studentId: studentId,
+                action: action
+            }, (error: any) => {
+                if(error) {
+                    console.log(error);
+                } else {
+                    toast.show({
+                        description: 'Attendance Checked-in!'
+                    });
+                }
+            });
+        }
+        else {
+            toast.show({
+                description: 'You have to be authenticated first',
+                duration: 2000
+            });
+        }
     }
 
     // render list of devices
@@ -231,7 +240,6 @@ export const ScanScreen: FC<StackScreenProps<NavigatorParamList, "scan">> = obse
                             </Text>
                         </Button> )
                     }
-                    
                 </HStack>
             </HStack>
 
@@ -246,6 +254,13 @@ export const ScanScreen: FC<StackScreenProps<NavigatorParamList, "scan">> = obse
                         <MaterialCommunityIcons name="close-circle" size={24} color="red" />
                     }
                 </HStack>
+            </Box>
+
+            <Box bg="blueGray.300" pl="3" pr="4" py="3" mx="4" my="2" borderRadius="20" shadow="3">
+                <Text fontSize="md" color="coolGray.800">
+                    You have to authenticate yourself before checking-in. 
+                    Please talk to your instructor if there are any issues with the process.
+                </Text>
             </Box>
 
             <FlatList data={devicesList} keyExtractor={item => item.id} renderItem={({ item }) => renderItem(item)} />
