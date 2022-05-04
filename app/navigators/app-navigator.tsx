@@ -8,8 +8,7 @@ import React from "react"
 import { useColorScheme } from "react-native"
 import { NavigationContainer, DefaultTheme, DarkTheme } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
-import { WelcomeScreen, DemoScreen, DemoListScreen, BroadcastScreen, 
-    ScanScreen, LoginScreen, CoursesScreen, CourseStudentScreen, CourseInstructorScreen, LessonsScreen} from "../screens"
+import { BroadcastScreen, ScanScreen, LoginScreen, CoursesScreen, LessonsScreen, RegistrationScreen } from "../screens"
 import { navigationRef, useBackButtonHandler } from "./navigation-utilities"
 
 /**
@@ -29,13 +28,12 @@ export type NavigatorParamList = {
   demo: undefined
   demoList: undefined
   // 🔥 Your screens go here
-  broadcast: { courseId: string, lessonId: string } | undefined
-  scan: { courseId: string, lessonId: string } | undefined
   login: undefined
+  registration: undefined
   courses: undefined
   lessons: { courseId: string } | undefined
-  courseStudent: { courseId: string } | undefined
-  courseInstructor: { courseId: string } | undefined
+  broadcast: { courseId: string, lessonId: string } | undefined
+  scan: { courseId: string, lessonId: string } | undefined
 }
 
 // Documentation: https://reactnavigation.org/docs/stack-navigator/
@@ -54,6 +52,7 @@ const AppStack = () => {
       {/* <Stack.Screen name="demoList" component={DemoListScreen} /> */}
       {/** 🔥 Your screens go here */}
       <Stack.Screen name="login" component={LoginScreen} />
+      <Stack.Screen name="registration" component={RegistrationScreen} />
       <Stack.Screen name="courses" component={CoursesScreen} />
       <Stack.Screen name="lessons" component={LessonsScreen} />
       <Stack.Screen name="broadcast" component={BroadcastScreen} />

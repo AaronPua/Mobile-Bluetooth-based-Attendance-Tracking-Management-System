@@ -7,9 +7,7 @@ import { useNavigation } from "@react-navigation/native"
 import { Box, Center, FormControl, Heading, HStack, Input, Link, VStack, Text, Button,
             View, Alert, IconButton, CloseIcon, Collapse, WarningOutlineIcon, Spacer} from "native-base"
 import Meteor from '@meteorrn/core'
-import { useForm, Controller } from "react-hook-form"
-import { yupResolver } from '@hookform/resolvers/yup'
- import { Formik } from 'formik'
+import { Formik } from 'formik'
 import * as yup from "yup"
 import { HeaderBar } from "../../components"
 
@@ -31,6 +29,11 @@ export const LoginScreen: FC<StackScreenProps<NavigatorParamList, "login">> = ob
 
     const [error, setError] = useState('')
     const [showError, setShowError] = useState(false);
+
+    const initialValues = { 
+        email: '', 
+        password: '' 
+    };
 
     const loginValidationSchema = yup.object().shape({
         email: yup.string().email('Must be a valid email address').required('Email is required'),
@@ -83,9 +86,12 @@ export const LoginScreen: FC<StackScreenProps<NavigatorParamList, "login">> = ob
                         }
 
                         <Formik 
-                            initialValues={{ email: '', password: '' }}
+                            initialValues={initialValues}
                             validationSchema={loginValidationSchema}
-                            onSubmit={values => loginWithPassword(values)}
+                            onSubmit={(values, { resetForm }) => {
+                                loginWithPassword(values);
+                                resetForm({ values: initialValues });
+                            }}
                         >
                             {({ handleChange, handleBlur, handleSubmit, values, errors, touched, isValid }) => (
                                 <>
@@ -135,7 +141,8 @@ export const LoginScreen: FC<StackScreenProps<NavigatorParamList, "login">> = ob
                             <Text fontSize="sm" color="coolGray.600">
                                 I'm a new user.{" "}
                             </Text>
-                            <Link _text={{ color: "indigo.500", fontWeight: "medium", fontSize: "sm" }}>
+                            <Link _text={{ color: "indigo.500", fontWeight: "medium", fontSize: "sm" }} 
+                                onPress={() => navigation.navigate({ name: 'registration' })}>
                                 Sign Up
                             </Link>
                         </HStack>
