@@ -4,11 +4,12 @@ import { StackScreenProps } from "@react-navigation/stack"
 import { NavigatorParamList } from "../../navigators"
 import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../../models"
-import { Box, HStack, StatusBar, View, Text, VStack, FlatList, Pressable, Progress, Spacer } from "native-base"
-import { MaterialCommunityIcons, Octicons } from '@expo/vector-icons'
+import { Box, HStack, View, Text, VStack, FlatList, Pressable, Progress, Spacer } from "native-base"
+import { MaterialCommunityIcons } from '@expo/vector-icons'
 import Meteor from '@meteorrn/core'
 import { CoursesCollection } from '../../utils/collections'
-import _ from 'underscore';
+import _ from 'underscore'
+import { HeaderBar } from "../../components"
 
 // STOP! READ ME FIRST!
 // To fix the TS error below, you'll need to add the following things in your navigation config:
@@ -29,23 +30,21 @@ export const CoursesScreen: FC<StackScreenProps<NavigatorParamList, "courses">> 
     const [isUserStudent, setIsUserStudent] = useState(false);
     const [isUserInstructor, setIsUserInstructor] = useState(false);
 
-    const { userId, userCourses, userCoursesLessons } = Meteor.useTracker(() => {
+    const { userId, userCoursesLessons } = Meteor.useTracker(() => {
         const userId = Meteor.userId();
 
         Meteor.subscribe('courses.specificUser', userId);
         const userCourses = CoursesCollection.find({}, { sort: { name: 1 }, fields: { name: 1, credits: 1 } }).fetch();
 
         const userCoursesLessons = _.chain(userCourses).pluck('_id')
-                        .map((courseId) => {
-                            Meteor.subscribe('courses.specific.withLessons', courseId);
-                            return CoursesCollection.find({ _id: courseId }, {
-                                fields: { name: 1, credits: 1, lessons: 1 }
-                            }).fetch();
-                        }).value();
+                                    .map((courseId) => {
+                                        Meteor.subscribe('courses.specific.withLessons', courseId);
+                                        return CoursesCollection.find({ _id: courseId }, {
+                                            fields: { name: 1, credits: 1, lessons: 1 }
+                                        }).fetch();
+                                    }).value();
 
-        // console.log('userCoursesLessons', userCoursesLessons);
-
-        return { userId, userCourses, userCoursesLessons };
+        return { userId, userCoursesLessons };
     });
 
      const isStudent = () => {
@@ -80,8 +79,8 @@ export const CoursesScreen: FC<StackScreenProps<NavigatorParamList, "courses">> 
     }, [userId]);
 
     const calculateProgress = (all: string[], attended: string[]) => {
-        const overall = all.length;
-        const present = attended.length;
+        const overall = all ? all.length : 0;
+        const present = attended ? attended.length: 0;
 
         return present / overall * 100;
     }
@@ -89,9 +88,10 @@ export const CoursesScreen: FC<StackScreenProps<NavigatorParamList, "courses">> 
     const renderItem = (item: any) => {
         const lessonIds = _.chain(item).pluck('lessons').flatten(true).pluck('_id').value();
         const lessonAttendedIds = _.chain(item).pluck('lessons').flatten(true)
-                        .filter((lesson) => {
-                            return _.chain(lesson).get('studentAttendance').findWhere({ _id: userId }).value();
-                        }).pluck('_id').value();
+                                    .filter((lesson) => {
+                                        return _.chain(lesson).get('studentAttendance').findWhere({ _id: userId }).value();
+                                    })
+                                    .pluck('_id').value();
         return (
             <Pressable onPress={() => navigation.navigate('lessons', { courseId: item[0]._id })}>
                 <Box bg="#C1DBB3" pl="3" pr="4" py="2" mx="4" my="2" borderRadius="20" shadow="3">
@@ -139,15 +139,7 @@ export const CoursesScreen: FC<StackScreenProps<NavigatorParamList, "courses">> 
 
     return (
         <View backgroundColor="blueGray.100" flex="1">
-            <StatusBar backgroundColor="black" barStyle="light-content" />
-            <Box safeAreaTop bg="#6200ee" />
-            <HStack bg="#6200ee" px="3" py="3" justifyContent="space-between" alignItems="center" w="100%">
-                <HStack alignItems="center">
-                    <Text color="white" fontSize="20" fontWeight="bold">
-                        Courses
-                    </Text>
-                </HStack>
-            </HStack>
+            <HeaderBar title="Courses" />
 
             <FlatList data={userCoursesLessons} keyExtractor={(item: any) => item[0]._id} renderItem={({ item }) => renderItem(item)} />
         </View>

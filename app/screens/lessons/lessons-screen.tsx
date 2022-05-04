@@ -4,12 +4,13 @@ import { StackScreenProps } from "@react-navigation/stack"
 import { NavigatorParamList } from "../../navigators"
 import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../../models"
-import { Box, HStack, StatusBar, View, Text, VStack, FlatList, Pressable, Spacer } from "native-base"
+import { Box, HStack, View, Text, VStack, FlatList, Pressable, Spacer } from "native-base"
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import Meteor from '@meteorrn/core'
 import { LessonsCollection } from '../../utils/collections'
-import moment from 'moment';
-import _ from 'underscore';
+import moment from 'moment'
+import _ from 'underscore'
+import { HeaderBar } from "../../components"
 
 // STOP! READ ME FIRST!
 // To fix the TS error below, you'll need to add the following things in your navigation config:
@@ -158,15 +159,7 @@ export const LessonsScreen: FC<StackScreenProps<NavigatorParamList, "lessons">> 
 
     return (
         <View backgroundColor="blueGray.100" flex="1">
-            <StatusBar backgroundColor="black" barStyle="light-content" />
-            <Box safeAreaTop bg="#6200ee" />
-            <HStack bg="#6200ee" px="3" py="3" justifyContent="space-between" alignItems="center" w="100%">
-                <HStack alignItems="center">
-                    <Text color="white" fontSize="20" fontWeight="bold">
-                        Lessons
-                    </Text>
-                </HStack>
-            </HStack>
+            <HeaderBar title="Lessons" />
 
             <FlatList data={lessons} keyExtractor={(item: any) => item._id} renderItem={({ item }) => renderItem(item)} />
         </View>

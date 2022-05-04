@@ -10,6 +10,7 @@ import Meteor from '@meteorrn/core'
 import { BeaconsCollection } from '../../utils/collections'
 import BLEAdvertiser from 'react-native-ble-advertiser'
 import { requestLocationBluetoothPermissions } from "../../utils/permissions"
+import { HeaderBar } from "../../components"
 
 // STOP! READ ME FIRST!
 // To fix the TS error below, you'll need to add the following things in your navigation config:
@@ -157,15 +158,7 @@ export const BroadcastScreen: FC<StackScreenProps<NavigatorParamList, "broadcast
 
     return (
         <View backgroundColor="blueGray.100" flex="1">
-            <StatusBar backgroundColor="black" barStyle="light-content" />
-            <Box safeAreaTop bg="#6200ee" />
-            <HStack bg="#6200ee" px="3" py="3" justifyContent="space-between" alignItems="center" w="100%">
-                <HStack alignItems="center">
-                    <Text color="white" fontSize="20" fontWeight="bold">
-                        Beacons
-                    </Text>
-                </HStack>
-            </HStack>
+            <HeaderBar title="Beacons" />
 
             <FlatList data={beacons} keyExtractor={(item: any) => item._id} renderItem={({ item }) => renderItem(item)} />
         </View>

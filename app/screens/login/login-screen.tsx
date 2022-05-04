@@ -4,11 +4,13 @@ import { StackScreenProps } from "@react-navigation/stack"
 import { NavigatorParamList } from "../../navigators"
 import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../../models"
-import { Box, Center, FormControl, Heading, HStack, Input, Link, VStack, Text, Button, StatusBar, View, Alert, IconButton, CloseIcon, Collapse, WarningOutlineIcon } from "native-base"
-import Meteor, { useTracker } from '@meteorrn/core'
+import { Box, Center, FormControl, Heading, HStack, Input, Link, VStack, Text, Button,
+            View, Alert, IconButton, CloseIcon, Collapse, WarningOutlineIcon } from "native-base"
+import Meteor from '@meteorrn/core'
 import { useForm, Controller } from "react-hook-form"
 import { yupResolver } from '@hookform/resolvers/yup'
-import * as yup from "yup";
+import * as yup from "yup"
+import { HeaderBar } from "../../components"
 
 // STOP! READ ME FIRST!
 // To fix the TS error below, you'll need to add the following things in your navigation config:
@@ -58,15 +60,7 @@ export const LoginScreen: FC<StackScreenProps<NavigatorParamList, "login">> = ob
 
     return (
         <View backgroundColor="blueGray.100" flex="1">
-            <StatusBar backgroundColor="black" barStyle="light-content" />
-            <Box safeAreaTop bg="#6200ee" />
-            <HStack bg="#6200ee" px="3" py="3" justifyContent="space-between" alignItems="center" w="100%">
-                <HStack alignItems="center">
-                <Text color="white" fontSize="20" fontWeight="bold">
-                    COMP8047
-                </Text>
-                </HStack>
-            </HStack>
+            <HeaderBar title="COMP8047" />
             <Center w="100%">
                 <Box safeArea p="2" py="8" w="90%" maxW="290">
                     <Heading size="lg" fontWeight="600" color="coolGray.800" _dark={{ color: "warmGray.50"}}>
@@ -85,9 +79,9 @@ export const LoginScreen: FC<StackScreenProps<NavigatorParamList, "login">> = ob
                                         <HStack flexShrink={1} space={2} alignItems="center">
                                             <Alert.Icon />
                                             <Text fontSize="md" fontWeight="medium" _dark={{
-                                            color: "coolGray.800"
-                                        }}>
-                                            Please try again!
+                                                color: "coolGray.800"
+                                            }}>
+                                                Please try again!
                                             </Text>
                                         </HStack>
                                         <IconButton variant="unstyled" icon={<CloseIcon size="3" color="coolGray.600" />} onPress={() => setShowError(false)} />
@@ -103,7 +97,6 @@ export const LoginScreen: FC<StackScreenProps<NavigatorParamList, "login">> = ob
                                 </Alert>
                             </Collapse>
                         }
-                        
                         
                         <FormControl>
                             <FormControl.Label>Email</FormControl.Label>

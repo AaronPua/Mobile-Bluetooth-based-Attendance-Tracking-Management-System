@@ -128,7 +128,6 @@ export const ScanScreen: FC<StackScreenProps<NavigatorParamList, "scan">> = obse
 
         // remove ble listeners on unmount
         return () => {
-            console.log('Unmount');
             discoverDeviceSub.remove();
             stopScanSub.remove();
         };
