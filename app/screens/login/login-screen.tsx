@@ -5,10 +5,11 @@ import { NavigatorParamList } from "../../navigators"
 import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../../models"
 import { Box, Center, FormControl, Heading, HStack, Input, Link, VStack, Text, Button,
-            View, Alert, IconButton, CloseIcon, Collapse, WarningOutlineIcon } from "native-base"
+            View, Alert, IconButton, CloseIcon, Collapse, WarningOutlineIcon, Spacer} from "native-base"
 import Meteor from '@meteorrn/core'
 import { useForm, Controller } from "react-hook-form"
 import { yupResolver } from '@hookform/resolvers/yup'
+ import { Formik } from 'formik'
 import * as yup from "yup"
 import { HeaderBar } from "../../components"
 
@@ -29,20 +30,11 @@ export const LoginScreen: FC<StackScreenProps<NavigatorParamList, "login">> = ob
     const navigation = useNavigation()
 
     const [error, setError] = useState('')
-    const [showError, setShowError] = React.useState(false)
+    const [showError, setShowError] = useState(false);
 
-    interface IFormInputs {
-        email: string
-        password: string
-    }
-
-    const schema = yup.object({
-        email: yup.string().email('Must be a valid email').required('Email is required'),
-        password: yup.string().required('Password is required'),
-    }).required();
-
-    const { control, register, handleSubmit, formState: { errors } } = useForm<IFormInputs>({
-        resolver: yupResolver(schema)
+    const loginValidationSchema = yup.object().shape({
+        email: yup.string().email('Must be a valid email address').required('Email is required'),
+        password: yup.string().required('Password is required')
     });
 
     const loginWithPassword = (data: { email: string; password: string }) => {
@@ -63,94 +55,90 @@ export const LoginScreen: FC<StackScreenProps<NavigatorParamList, "login">> = ob
             <HeaderBar title="COMP8047" />
             <Center w="100%">
                 <Box safeArea p="2" py="8" w="90%" maxW="290">
-                    <Heading size="lg" fontWeight="600" color="coolGray.800" _dark={{ color: "warmGray.50"}}>
+                    <Heading size="lg" fontWeight="600" color="coolGray.800">
                         Welcome
                     </Heading>
-                    <Heading mt="1" _dark={{ color: "warmGray.200"}} color="coolGray.600" fontWeight="medium" size="xs">
+                    <Heading mt="1" color="coolGray.600" fontWeight="medium" size="xs">
                         Sign in to continue!
                     </Heading>
 
                     <VStack space={3} mt="5">
-                        {showError && 
+                        { showError && 
                             <Collapse isOpen={showError}>
                                 <Alert status="error">
                                     <VStack space={1} flexShrink={1} w="100%">
                                         <HStack flexShrink={1} space={2} alignItems="center" justifyContent="space-between">
                                         <HStack flexShrink={1} space={2} alignItems="center">
                                             <Alert.Icon />
-                                            <Text fontSize="md" fontWeight="medium" _dark={{
-                                                color: "coolGray.800"
-                                            }}>
-                                                Please try again!
+                                            <Text fontSize="md" fontWeight="medium">
+                                                Error
                                             </Text>
                                         </HStack>
                                         <IconButton variant="unstyled" icon={<CloseIcon size="3" color="coolGray.600" />} onPress={() => setShowError(false)} />
                                         </HStack>
-                                        <Box pl="6" _dark={{
-                                            _text: {
-                                            color: "coolGray.600"
-                                            }
-                                         }}>
-                                            {error}
-                                        </Box>
+                                        <Box pl="6">{error}</Box>
                                     </VStack>
                                 </Alert>
                             </Collapse>
                         }
+
+                        <Formik 
+                            initialValues={{ email: '', password: '' }}
+                            validationSchema={loginValidationSchema}
+                            onSubmit={values => loginWithPassword(values)}
+                        >
+                            {({ handleChange, handleBlur, handleSubmit, values, errors, touched, isValid }) => (
+                                <>
+                                    <FormControl mb="4" isInvalid={!!errors.email}>
+                                        <FormControl.Label>Email</FormControl.Label>
+                                        <Input
+                                            onChangeText={handleChange('email')}
+                                            onBlur={handleBlur('email')}
+                                            value={values.email}
+                                        />
+                                        { errors.email && touched.email &&
+                                            <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
+                                                {errors.email}
+                                            </FormControl.ErrorMessage>
+                                        }
+                                    </FormControl>
+
+                                    <FormControl mb="2" isInvalid={!!errors.password}>
+                                        <FormControl.Label>Password</FormControl.Label>
+                                        <Input
+                                            type="password"
+                                            onChangeText={handleChange('password')}
+                                            onBlur={handleBlur('password')}
+                                            value={values.password}
+                                        />
+                                        <HStack justifyContent="space-between">
+                                            { errors.password && touched.password &&
+                                                <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
+                                                    {errors.password}
+                                                </FormControl.ErrorMessage>
+                                            }
+                                            <Spacer />
+                                            <Link mt="2" mb="2" _text={{ fontSize: "xs", fontWeight: "500", color: "indigo.500"}} alignSelf="flex-end">
+                                                Forget Password?
+                                            </Link>
+                                        </HStack>
+                                    </FormControl>
+
+                                    <Button mt="2" colorScheme="indigo" onPress={handleSubmit} isDisabled={!isValid}>
+                                        Sign in
+                                    </Button>
+                                </>
+                            )}
+                        </Formik>
                         
-                        <FormControl>
-                            <FormControl.Label>Email</FormControl.Label>
-                            <Controller
-                                control={control}
-                                render={({ field: { onChange, onBlur, value } }) => (
-                                <Input
-                                    onBlur={onBlur}
-                                    onChangeText={onChange}
-                                    value={value}
-                                    {...register("email")}
-                                />
-                                )}
-                                name="email"
-                            />
-                            {/* {errors.email?.message} */}
-                            <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
-                                {errors.email?.message}
-                            </FormControl.ErrorMessage>
-                        </FormControl>
-                        <FormControl>
-                            <FormControl.Label>Password</FormControl.Label>
-                            <Controller
-                                control={control}
-                                render={({ field: { onChange, onBlur, value } }) => (
-                                <Input
-                                    type="password"
-                                    onBlur={onBlur}
-                                    onChangeText={onChange}
-                                    value={value}
-                                    {...register("password")}
-                                />
-                                )}
-                                name="password"
-                            />
-                            {/* {errors.password?.message} */}
-                            <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
-                                {errors.password?.message}
-                            </FormControl.ErrorMessage>
-                            {/* <Link _text={{ fontSize: "xs", fontWeight: "500", color: "indigo.500"}} alignSelf="flex-end" mt="1">
-                                Forget Password?
-                            </Link> */}
-                        </FormControl>
-                        <Button mt="2" colorScheme="indigo" onPress={handleSubmit(loginWithPassword)}>
-                            Sign in
-                        </Button>
-                        {/* <HStack mt="6" justifyContent="center">
-                            <Text fontSize="sm" color="coolGray.600" _dark={{ color: "warmGray.200" }}>
+                        <HStack mt="6" justifyContent="center">
+                            <Text fontSize="sm" color="coolGray.600">
                                 I'm a new user.{" "}
                             </Text>
-                            <Link _text={{ color: "indigo.500", fontWeight: "medium", fontSize: "sm" }} href="#">
+                            <Link _text={{ color: "indigo.500", fontWeight: "medium", fontSize: "sm" }}>
                                 Sign Up
                             </Link>
-                        </HStack> */}
+                        </HStack>
                     </VStack>
                 </Box>
             </Center>
