@@ -8,7 +8,7 @@ import React from "react"
 import { useColorScheme } from "react-native"
 import { NavigationContainer, DefaultTheme, DarkTheme } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
-import { BroadcastScreen, ScanScreen, LoginScreen, CoursesScreen, LessonsScreen, RegistrationScreen } from "../screens"
+import { BroadcastScreen, ScanScreen, LoginScreen, CoursesScreen, LessonsScreen, RegistrationScreen, ForgotPasswordScreen } from "../screens"
 import { navigationRef, useBackButtonHandler } from "./navigation-utilities"
 
 /**
@@ -30,6 +30,7 @@ export type NavigatorParamList = {
   // 🔥 Your screens go here
   login: undefined
   registration: undefined
+  forgotPassword: undefined
   courses: undefined
   lessons: { courseId: string } | undefined
   broadcast: { courseId: string, lessonId: string } | undefined
@@ -53,6 +54,7 @@ const AppStack = () => {
       {/** 🔥 Your screens go here */}
       <Stack.Screen name="login" component={LoginScreen} />
       <Stack.Screen name="registration" component={RegistrationScreen} />
+      <Stack.Screen name="forgotPassword" component={ForgotPasswordScreen} />
       <Stack.Screen name="courses" component={CoursesScreen} />
       <Stack.Screen name="lessons" component={LessonsScreen} />
       <Stack.Screen name="broadcast" component={BroadcastScreen} />

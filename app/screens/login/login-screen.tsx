@@ -124,8 +124,9 @@ export const LoginScreen: FC<StackScreenProps<NavigatorParamList, "login">> = ob
                                                 </FormControl.ErrorMessage>
                                             }
                                             <Spacer />
-                                            <Link mt="2" mb="2" _text={{ fontSize: "xs", fontWeight: "500", color: "indigo.500"}} alignSelf="flex-end">
-                                                Forget Password?
+                                            <Link mt="2" mb="2" _text={{ fontSize: "xs", fontWeight: "500", color: "indigo.500"}} alignSelf="flex-end"
+                                                onPress={() => navigation.navigate({ name: 'forgotPassword' })}>
+                                                Forgot Password?
                                             </Link>
                                         </HStack>
                                     </FormControl>
