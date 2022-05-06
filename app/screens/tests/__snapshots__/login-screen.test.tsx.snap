@@ -1,0 +1,576 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<LoginScreen /> renders correctly 1`] = `
+<RNCSafeAreaProvider
+  onInsetsChange={[Function]}
+  style={
+    Array [
+      Object {
+        "flex": 1,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    _text={
+      Object {
+        "color": "darkText",
+      }
+    }
+    dataSet={Object {}}
+    style={
+      Object {
+        "backgroundColor": "#f1f5f9",
+        "flex": 1,
+      }
+    }
+  >
+    <View
+      dataSet={Object {}}
+      style={
+        Object {
+          "backgroundColor": "#6200ee",
+        }
+      }
+    />
+    <View
+      dataSet={Object {}}
+      style={
+        Object {
+          "alignItems": "center",
+          "backgroundColor": "#6200ee",
+          "flexDirection": "row",
+          "justifyContent": "space-between",
+          "paddingBottom": 12,
+          "paddingLeft": 12,
+          "paddingRight": 12,
+          "paddingTop": 12,
+          "width": "100%",
+        }
+      }
+    >
+      <View
+        dataSet={Object {}}
+        style={
+          Object {
+            "alignItems": "center",
+            "flexDirection": "row",
+          }
+        }
+      >
+        <Text
+          dataSet={Object {}}
+          style={
+            Object {
+              "backgroundColor": undefined,
+              "color": "#FFFFFF",
+              "fontFamily": undefined,
+              "fontSize": 20,
+              "fontStyle": "normal",
+              "fontWeight": "700",
+              "letterSpacing": 0,
+              "lineHeight": 30,
+              "textDecorationLine": undefined,
+            }
+          }
+        >
+          COMP8047
+        </Text>
+      </View>
+    </View>
+    <View
+      dataSet={Object {}}
+      style={
+        Object {
+          "alignItems": "center",
+          "display": "flex",
+          "justifyContent": "center",
+          "width": "100%",
+        }
+      }
+    >
+      <View
+        dataSet={Object {}}
+        style={
+          Object {
+            "maxWidth": 290,
+            "paddingBottom": 32,
+            "paddingLeft": 8,
+            "paddingRight": 8,
+            "paddingTop": 32,
+            "width": "90%",
+          }
+        }
+      >
+        <Text
+          dataSet={Object {}}
+          style={
+            Object {
+              "backgroundColor": undefined,
+              "color": "#1f2937",
+              "fontFamily": undefined,
+              "fontSize": null,
+              "fontStyle": "normal",
+              "fontWeight": "600",
+              "letterSpacing": 0,
+              "lineHeight": 30,
+              "textDecorationLine": undefined,
+            }
+          }
+        >
+          Welcome
+        </Text>
+        <Text
+          dataSet={Object {}}
+          style={
+            Object {
+              "backgroundColor": undefined,
+              "color": "#4b5563",
+              "fontFamily": undefined,
+              "fontSize": 14,
+              "fontStyle": "normal",
+              "fontWeight": "500",
+              "letterSpacing": 0,
+              "lineHeight": 17.5,
+              "marginTop": 4,
+              "textDecorationLine": undefined,
+            }
+          }
+        >
+          Sign in to continue!
+        </Text>
+        <View
+          dataSet={Object {}}
+          style={
+            Object {
+              "marginTop": 20,
+            }
+          }
+        >
+          <View
+            dataSet={Object {}}
+            isInvalid={false}
+            style={
+              Object {
+                "marginBottom": 16,
+                "width": "100%",
+              }
+            }
+          >
+            <View
+              dataSet={Object {}}
+              feedbackId="field-react-aria-1-feedback"
+              hasFeedbackText={false}
+              hasHelpText={false}
+              helpTextId="field-react-aria-1-helptext"
+              isDisabled={false}
+              isInvalid={false}
+              isReadOnly={false}
+              isRequired={false}
+              labelId="field-react-aria-1-label"
+              nativeID="field-react-aria-1-label"
+              setHasFeedbackText={[Function]}
+              setHasHelpText={[Function]}
+              style={
+                Object {
+                  "flexDirection": "row",
+                  "justifyContent": "flex-start",
+                  "marginBottom": 8,
+                  "marginRight": 12,
+                }
+              }
+            >
+              <Text
+                dataSet={Object {}}
+                style={
+                  Object {
+                    "backgroundColor": undefined,
+                    "color": "#1f2937",
+                    "fontFamily": undefined,
+                    "fontSize": 14,
+                    "fontStyle": "normal",
+                    "fontWeight": "500",
+                    "letterSpacing": 0,
+                    "lineHeight": 21,
+                    "textDecorationLine": undefined,
+                  }
+                }
+              >
+                Email
+              </Text>
+            </View>
+            <TextInput
+              accessibilityLabel="Email Input"
+              accessible={true}
+              allowFontScaling={true}
+              dataSet={Object {}}
+              disabled={false}
+              editable={true}
+              isRequired={false}
+              nativeID="field-react-aria-1"
+              onBlur={[Function]}
+              onChangeText={[Function]}
+              onFocus={[Function]}
+              onKeyPress={[Function]}
+              placeholderTextColor="#a3a3a3"
+              readOnly={false}
+              rejectResponderTermination={true}
+              required={false}
+              secureTextEntry={false}
+              selectionColor="#1f2937"
+              style={
+                Array [
+                  Object {
+                    "borderColor": "#e5e5e5",
+                    "borderRadius": 4,
+                    "borderWidth": 1,
+                    "color": "#1f2937",
+                    "fontFamily": undefined,
+                    "fontSize": 12,
+                    "fontStyle": "normal",
+                    "fontWeight": "400",
+                    "overflow": "hidden",
+                    "paddingBottom": 8,
+                    "paddingLeft": 8,
+                    "paddingRight": 8,
+                    "paddingTop": 8,
+                    "width": undefined,
+                  },
+                  Object {},
+                ]
+              }
+              underlineColorAndroid="transparent"
+              value=""
+            />
+          </View>
+          <View
+            dataSet={Object {}}
+            isInvalid={false}
+            style={
+              Object {
+                "marginBottom": 8,
+                "width": "100%",
+              }
+            }
+          >
+            <View
+              dataSet={Object {}}
+              feedbackId="field-react-aria-2-feedback"
+              hasFeedbackText={false}
+              hasHelpText={false}
+              helpTextId="field-react-aria-2-helptext"
+              isDisabled={false}
+              isInvalid={false}
+              isReadOnly={false}
+              isRequired={false}
+              labelId="field-react-aria-2-label"
+              nativeID="field-react-aria-2-label"
+              setHasFeedbackText={[Function]}
+              setHasHelpText={[Function]}
+              style={
+                Object {
+                  "flexDirection": "row",
+                  "justifyContent": "flex-start",
+                  "marginBottom": 8,
+                  "marginRight": 12,
+                }
+              }
+            >
+              <Text
+                dataSet={Object {}}
+                style={
+                  Object {
+                    "backgroundColor": undefined,
+                    "color": "#1f2937",
+                    "fontFamily": undefined,
+                    "fontSize": 14,
+                    "fontStyle": "normal",
+                    "fontWeight": "500",
+                    "letterSpacing": 0,
+                    "lineHeight": 21,
+                    "textDecorationLine": undefined,
+                  }
+                }
+              >
+                Password
+              </Text>
+            </View>
+            <TextInput
+              accessibilityLabel="Password Input"
+              accessible={true}
+              allowFontScaling={true}
+              dataSet={Object {}}
+              disabled={false}
+              editable={true}
+              isRequired={false}
+              nativeID="field-react-aria-2"
+              onBlur={[Function]}
+              onChangeText={[Function]}
+              onFocus={[Function]}
+              onKeyPress={[Function]}
+              placeholderTextColor="#a3a3a3"
+              readOnly={false}
+              rejectResponderTermination={true}
+              required={false}
+              secureTextEntry={true}
+              selectionColor="#1f2937"
+              style={
+                Array [
+                  Object {
+                    "borderColor": "#e5e5e5",
+                    "borderRadius": 4,
+                    "borderWidth": 1,
+                    "color": "#1f2937",
+                    "fontFamily": undefined,
+                    "fontSize": 12,
+                    "fontStyle": "normal",
+                    "fontWeight": "400",
+                    "overflow": "hidden",
+                    "paddingBottom": 8,
+                    "paddingLeft": 8,
+                    "paddingRight": 8,
+                    "paddingTop": 8,
+                    "width": undefined,
+                  },
+                  Object {},
+                ]
+              }
+              underlineColorAndroid="transparent"
+              value=""
+            />
+            <View
+              dataSet={Object {}}
+              style={
+                Object {
+                  "flexDirection": "row",
+                  "justifyContent": "space-between",
+                }
+              }
+            >
+              <View
+                dataSet={Object {}}
+                style={
+                  Object {
+                    "flexGrow": 1,
+                  }
+                }
+              />
+              <View
+                dataSet={Object {}}
+                style={Object {}}
+              />
+              <View
+                accessibilityRole="link"
+                accessible={true}
+                collapsable={false}
+                dataSet={Object {}}
+                focusable={true}
+                onBlur={[Function]}
+                onClick={[Function]}
+                onFocus={[Function]}
+                onHoverIn={[Function]}
+                onHoverOut={[Function]}
+                onResponderGrant={[Function]}
+                onResponderMove={[Function]}
+                onResponderRelease={[Function]}
+                onResponderTerminate={[Function]}
+                onResponderTerminationRequest={[Function]}
+                onStartShouldSetResponder={[Function]}
+                style={
+                  Object {
+                    "alignSelf": "flex-end",
+                    "flexDirection": "row",
+                    "height": "auto",
+                    "marginBottom": 8,
+                    "marginTop": 8,
+                    "width": "auto",
+                  }
+                }
+              >
+                <Text
+                  dataSet={Object {}}
+                  style={
+                    Object {
+                      "backgroundColor": undefined,
+                      "color": "#6366f1",
+                      "fontFamily": undefined,
+                      "fontSize": 12,
+                      "fontStyle": "normal",
+                      "fontWeight": "500",
+                      "letterSpacing": 0,
+                      "lineHeight": 18,
+                      "textDecorationLine": "underline",
+                    }
+                  }
+                >
+                  Forgot Password?
+                </Text>
+              </View>
+            </View>
+          </View>
+          <View
+            _text={
+              Object {
+                "color": "lightText",
+              }
+            }
+            accessibilityLabel="Sign In Button"
+            accessibilityRole="button"
+            accessible={true}
+            collapsable={false}
+            colorScheme="indigo"
+            dataSet={Object {}}
+            focusable={true}
+            onBlur={[Function]}
+            onClick={[Function]}
+            onFocus={[Function]}
+            onHoverIn={[Function]}
+            onHoverOut={[Function]}
+            onResponderGrant={[Function]}
+            onResponderMove={[Function]}
+            onResponderRelease={[Function]}
+            onResponderTerminate={[Function]}
+            onResponderTerminationRequest={[Function]}
+            onStartShouldSetResponder={[Function]}
+            style={
+              Object {
+                "alignItems": "center",
+                "backgroundColor": "#6366f1",
+                "borderRadius": 4,
+                "flexDirection": "row",
+                "justifyContent": "center",
+                "marginTop": 8,
+                "paddingBottom": 8,
+                "paddingLeft": 12,
+                "paddingRight": 12,
+                "paddingTop": 8,
+              }
+            }
+          >
+            <View
+              dataSet={Object {}}
+              style={
+                Object {
+                  "alignItems": "center",
+                  "flexDirection": "row",
+                }
+              }
+            >
+              <View
+                dataSet={Object {}}
+                style={Object {}}
+              >
+                <Text
+                  dataSet={Object {}}
+                  style={
+                    Object {
+                      "backgroundColor": undefined,
+                      "color": "#FFFFFF",
+                      "fontFamily": undefined,
+                      "fontSize": 14,
+                      "fontStyle": "normal",
+                      "fontWeight": "500",
+                      "letterSpacing": 0,
+                      "lineHeight": 21,
+                      "textDecorationLine": undefined,
+                    }
+                  }
+                >
+                  Sign in
+                </Text>
+              </View>
+            </View>
+          </View>
+          <View
+            dataSet={Object {}}
+            style={
+              Object {
+                "height": 12,
+              }
+            }
+          />
+          <View
+            dataSet={Object {}}
+            style={
+              Object {
+                "flexDirection": "row",
+                "justifyContent": "center",
+                "marginTop": 24,
+              }
+            }
+          >
+            <Text
+              dataSet={Object {}}
+              style={
+                Object {
+                  "backgroundColor": undefined,
+                  "color": "#4b5563",
+                  "fontFamily": undefined,
+                  "fontSize": 14,
+                  "fontStyle": "normal",
+                  "fontWeight": "400",
+                  "letterSpacing": 0,
+                  "lineHeight": 21,
+                  "textDecorationLine": undefined,
+                }
+              }
+            >
+              I'm a new user.
+               
+            </Text>
+            <View
+              dataSet={Object {}}
+              style={Object {}}
+            />
+            <View
+              accessibilityRole="link"
+              accessible={true}
+              collapsable={false}
+              dataSet={Object {}}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onHoverIn={[Function]}
+              onHoverOut={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
+              style={
+                Object {
+                  "flexDirection": "row",
+                  "height": "auto",
+                  "width": "auto",
+                }
+              }
+            >
+              <Text
+                dataSet={Object {}}
+                style={
+                  Object {
+                    "backgroundColor": undefined,
+                    "color": "#6366f1",
+                    "fontFamily": undefined,
+                    "fontSize": 14,
+                    "fontStyle": "normal",
+                    "fontWeight": "500",
+                    "letterSpacing": 0,
+                    "lineHeight": 21,
+                    "textDecorationLine": "underline",
+                  }
+                }
+              >
+                Sign Up
+              </Text>
+            </View>
+          </View>
+        </View>
+      </View>
+    </View>
+  </View>
+</RNCSafeAreaProvider>
+`;

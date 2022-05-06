@@ -48,7 +48,7 @@ export const LoginScreen: FC<StackScreenProps<NavigatorParamList, "login">> = ob
                 setShowError(true);
             }
             else {
-                navigation.navigate({ name: 'courses' });
+                navigation.navigate('courses');
             }
         });
     }
@@ -101,6 +101,7 @@ export const LoginScreen: FC<StackScreenProps<NavigatorParamList, "login">> = ob
                                             onChangeText={handleChange('email')}
                                             onBlur={handleBlur('email')}
                                             value={values.email}
+                                            accessibilityLabel="Email Input"
                                         />
                                         { errors.email && touched.email &&
                                             <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
@@ -116,6 +117,7 @@ export const LoginScreen: FC<StackScreenProps<NavigatorParamList, "login">> = ob
                                             onChangeText={handleChange('password')}
                                             onBlur={handleBlur('password')}
                                             value={values.password}
+                                            accessibilityLabel="Password Input"
                                         />
                                         <HStack justifyContent="space-between">
                                             { errors.password && touched.password &&
@@ -125,13 +127,14 @@ export const LoginScreen: FC<StackScreenProps<NavigatorParamList, "login">> = ob
                                             }
                                             <Spacer />
                                             <Link mt="2" mb="2" _text={{ fontSize: "xs", fontWeight: "500", color: "indigo.500"}} alignSelf="flex-end"
-                                                onPress={() => navigation.navigate({ name: 'forgotPassword' })}>
+                                                onPress={() => navigation.navigate('forgotPassword')}>
                                                 Forgot Password?
                                             </Link>
                                         </HStack>
                                     </FormControl>
 
-                                    <Button mt="2" colorScheme="indigo" onPress={handleSubmit} isDisabled={!isValid}>
+                                    <Button mt="2" colorScheme="indigo" onPress={handleSubmit as any} isDisabled={!isValid} 
+                                        accessibilityLabel="Sign In Button">
                                         Sign in
                                     </Button>
                                 </>
@@ -143,7 +146,7 @@ export const LoginScreen: FC<StackScreenProps<NavigatorParamList, "login">> = ob
                                 I'm a new user.{" "}
                             </Text>
                             <Link _text={{ color: "indigo.500", fontWeight: "medium", fontSize: "sm" }} 
-                                onPress={() => navigation.navigate({ name: 'registration' })}>
+                                onPress={() => navigation.navigate('registration')}>
                                 Sign Up
                             </Link>
                         </HStack>

@@ -5,7 +5,7 @@ import { NavigatorParamList } from "../../navigators"
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../../models"
 import { Box, Center, FormControl, Heading, HStack, Input, VStack, Text, Button,
-        Alert, IconButton, CloseIcon, Collapse, WarningOutlineIcon, Spacer, Select, ScrollView } from "native-base"
+        Alert, IconButton, CloseIcon, Collapse, WarningOutlineIcon, ScrollView } from "native-base"
 import { Accounts } from '@meteorrn/core'
 import { Formik } from 'formik'
 import * as yup from "yup"
@@ -124,6 +124,7 @@ export const ForgotPasswordScreen: FC<StackScreenProps<NavigatorParamList, "forg
                                             onChangeText={handleChange('email')}
                                             onBlur={handleBlur('email')}
                                             value={values.email}
+                                            accessibilityLabel="Email Input"
                                         />
                                         { errors.email && touched.email &&
                                             <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
@@ -132,7 +133,8 @@ export const ForgotPasswordScreen: FC<StackScreenProps<NavigatorParamList, "forg
                                         }
                                     </FormControl>
 
-                                    <Button mt="2" colorScheme="indigo" onPress={handleSubmit} isDisabled={!isValid}>
+                                    <Button mt="2" colorScheme="indigo" onPress={handleSubmit as any} isDisabled={!isValid}
+                                        accessibilityLabel="Send Button">
                                         Send
                                     </Button>
                                 </>

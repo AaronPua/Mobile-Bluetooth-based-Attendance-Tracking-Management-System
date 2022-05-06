@@ -4,7 +4,7 @@ import { StackScreenProps } from "@react-navigation/stack"
 import { NavigatorParamList } from "../../navigators"
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../../models"
-import { Box, HStack, StatusBar, View, Text, VStack, FlatList, Pressable, Button } from "native-base"
+import { Box, HStack, View, Text, VStack, FlatList, Pressable, Button } from "native-base"
 import { MaterialCommunityIcons, Octicons, FontAwesome5 } from '@expo/vector-icons'
 import Meteor from '@meteorrn/core'
 import { BeaconsCollection } from '../../utils/collections'
@@ -33,7 +33,7 @@ export const BroadcastScreen: FC<StackScreenProps<NavigatorParamList, "broadcast
     const MANUF_DATA = [1,0];
     BLEAdvertiser.setCompanyId(APPLE_ID);
 
-    const { courseId, lessonId } = route.params;
+    const { courseId/* , lessonId */ } = route.params;
     const timer = useRef<ReturnType<typeof setInterval>>();
 
     const [activeItemIndex, setActiveItemIndex] = useState('');

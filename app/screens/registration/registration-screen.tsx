@@ -144,6 +144,7 @@ export const RegistrationScreen: FC<StackScreenProps<NavigatorParamList, "regist
                                             onChangeText={handleChange('firstName')}
                                             onBlur={handleBlur('firstName')}
                                             value={values.firstName}
+                                            accessibilityLabel="First Name"
                                         />
                                         { errors.firstName && touched.firstName &&
                                             <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
@@ -158,6 +159,7 @@ export const RegistrationScreen: FC<StackScreenProps<NavigatorParamList, "regist
                                             onChangeText={handleChange('lastName')}
                                             onBlur={handleBlur('lastName')}
                                             value={values.lastName}
+                                            accessibilityLabel="Last Name"
                                         />
                                         { errors.lastName && touched.lastName &&
                                             <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
@@ -190,6 +192,7 @@ export const RegistrationScreen: FC<StackScreenProps<NavigatorParamList, "regist
                                             onChangeText={handleChange('email')}
                                             onBlur={handleBlur('email')}
                                             value={values.email}
+                                            accessibilityLabel="Email Input"
                                         />
                                         { errors.email && touched.email &&
                                             <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
@@ -205,6 +208,7 @@ export const RegistrationScreen: FC<StackScreenProps<NavigatorParamList, "regist
                                             onChangeText={handleChange('password')}
                                             onBlur={handleBlur('password')}
                                             value={values.password}
+                                            accessibilityLabel="Password Input"
                                         />
                                         <HStack justifyContent="space-between">
                                             { errors.password && touched.password &&
@@ -216,7 +220,8 @@ export const RegistrationScreen: FC<StackScreenProps<NavigatorParamList, "regist
                                         </HStack>
                                     </FormControl>
 
-                                    <Button mt="2" colorScheme="indigo" onPress={handleSubmit} isDisabled={!isValid}>
+                                    <Button mt="2" colorScheme="indigo" onPress={handleSubmit as any} isDisabled={!isValid} 
+                                        accessibilityLabel="Register Button">
                                         Register
                                     </Button>
                                 </>

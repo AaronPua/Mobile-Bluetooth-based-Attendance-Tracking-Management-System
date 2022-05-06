@@ -15,12 +15,19 @@ import React, { useState, useEffect } from "react"
 import { SafeAreaProvider, initialWindowMetrics } from "react-native-safe-area-context"
 import { initFonts } from "./theme/fonts" // expo
 import * as storage from "./utils/storage"
-import { AppNavigator, useNavigationPersistence } from "./navigators"
+import { AppNavigator, useNavigationPersistence, NavigatorParamList } from "./navigators"
 import { RootStore, RootStoreProvider, setupRootStore } from "./models"
 import { ToggleStorybook } from "../storybook/toggle-storybook"
 import { ErrorBoundary } from "./screens/error/error-boundary"
 import { NativeBaseProvider } from "native-base"
 import Meteor from '@meteorrn/core'
+
+declare global {
+    // eslint-disable-next-line @typescript-eslint/no-namespace
+    namespace ReactNavigation {
+        interface RootParamList extends NavigatorParamList {}
+    }
+}
 
 // This puts screens in a native ViewController or Activity. If you want fully native
 // stack navigation, use `createNativeStackNavigator` in place of `createStackNavigator`:

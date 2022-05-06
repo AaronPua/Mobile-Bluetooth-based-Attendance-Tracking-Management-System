@@ -1,5 +1,6 @@
 // we always make sure 'react-native' gets included first
 import "react-native"
+import "@testing-library/jest-native/extend-expect"
 
 // libraries to mock
 import "./mock-react-native-image"
