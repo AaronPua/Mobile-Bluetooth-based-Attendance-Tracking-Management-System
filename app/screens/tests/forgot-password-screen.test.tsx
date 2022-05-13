@@ -32,6 +32,7 @@ describe('<ForgotPasswordScreen />', () => {
         fireEvent.press(sendButton);
 
         await waitFor(() => {
+            expect(sendButton).toBeDisabled();
             expect(spyMethod).toHaveBeenCalled();
         });
 

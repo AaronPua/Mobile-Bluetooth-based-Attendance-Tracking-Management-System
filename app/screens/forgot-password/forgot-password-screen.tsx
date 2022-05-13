@@ -116,7 +116,7 @@ export const ForgotPasswordScreen: FC<StackScreenProps<NavigatorParamList, "forg
                                 resetForm({ values: initialValues });
                             }}
                         >
-                            {({ handleChange, handleBlur, handleSubmit, values, errors, touched, isValid }) => (
+                            {({ handleChange, handleBlur, handleSubmit, values, errors, touched, isValid, isSubmitting }) => (
                                 <>
                                     <FormControl mb="2" isInvalid={!!errors.email}>
                                         <FormControl.Label>Email</FormControl.Label>
@@ -133,7 +133,7 @@ export const ForgotPasswordScreen: FC<StackScreenProps<NavigatorParamList, "forg
                                         }
                                     </FormControl>
 
-                                    <Button mt="2" colorScheme="indigo" onPress={handleSubmit as any} isDisabled={!isValid}
+                                    <Button mt="2" colorScheme="indigo" onPress={handleSubmit as any} isDisabled={!isValid} isLoading={isSubmitting}
                                         accessibilityLabel="Send Button">
                                         Send
                                     </Button>

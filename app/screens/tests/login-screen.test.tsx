@@ -38,6 +38,7 @@ describe('<LoginScreen />', () => {
         fireEvent.press(loginButton);
 
         await waitFor(() => {
+            expect(loginButton).toBeDisabled();
             expect(spyLogin).toHaveBeenCalled();
         });
 
