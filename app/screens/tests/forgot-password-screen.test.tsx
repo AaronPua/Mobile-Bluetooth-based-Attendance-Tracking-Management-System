@@ -34,5 +34,7 @@ describe('<ForgotPasswordScreen />', () => {
         await waitFor(() => {
             expect(spyMethod).toHaveBeenCalled();
         });
+
+        jest.clearAllMocks();
     });
 });

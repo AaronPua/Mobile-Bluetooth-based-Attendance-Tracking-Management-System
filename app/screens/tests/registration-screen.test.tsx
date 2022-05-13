@@ -2,7 +2,6 @@ import React from "react"
 import { fireEvent, waitFor } from '@testing-library/react-native'
 import { renderWithNativeBase } from './utils/jest-setup'
 import { RegistrationScreen } from '../index'
-import Meteor from '@meteorrn/core'
 
 jest.mock('@react-navigation/native', () => {
     return {
@@ -22,7 +21,6 @@ describe('<RegistrationScreen />', () => {
     });
 
     it('registration method gets called', async () => {
-        const spyMethod = jest.spyOn(Meteor, 'call');
         const { getByLabelText } = renderWithNativeBase(<RegistrationScreen navigation={undefined} route={undefined} />);
 
         const firstName = getByLabelText(/First Name/i);
@@ -38,7 +36,7 @@ describe('<RegistrationScreen />', () => {
         fireEvent.press(registerButton);
 
         await waitFor(() => {
-            expect(spyMethod).toHaveBeenCalled();
+            expect(registerButton).toBeDisabled();
         });
     });
 });

@@ -136,7 +136,7 @@ export const RegistrationScreen: FC<StackScreenProps<NavigatorParamList, "regist
                                 resetForm({ values: initialValues });
                             }}
                         >
-                            {({ handleChange, handleBlur, handleSubmit, values, errors, touched, isValid }) => (
+                            {({ handleChange, handleBlur, handleSubmit, values, errors, touched, isValid, isSubmitting }) => (
                                 <>
                                     <FormControl mb="2" isInvalid={!!errors.firstName}>
                                         <FormControl.Label>First Name</FormControl.Label>
@@ -220,7 +220,7 @@ export const RegistrationScreen: FC<StackScreenProps<NavigatorParamList, "regist
                                         </HStack>
                                     </FormControl>
 
-                                    <Button mt="2" colorScheme="indigo" onPress={handleSubmit as any} isDisabled={!isValid} 
+                                    <Button mt="2" colorScheme="indigo" onPress={handleSubmit as any} isDisabled={!isValid} isLoading={isSubmitting}
                                         accessibilityLabel="Register Button">
                                         Register
                                     </Button>

@@ -40,5 +40,7 @@ describe('<LoginScreen />', () => {
         await waitFor(() => {
             expect(spyLogin).toHaveBeenCalled();
         });
+
+        jest.clearAllMocks();
     });
 });
