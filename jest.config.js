@@ -6,6 +6,9 @@ module.exports = {
   globals: {
     "ts-jest": {
       babelConfig: true,
+      diagnostics: {
+          warnOnly: true
+      }
     },
   },
   transformIgnorePatterns: [
@@ -13,5 +16,5 @@ module.exports = {
   ],
   testPathIgnorePatterns: ["<rootDir>/node_modules/", "/e2e", "@react-native"],
   testEnvironment: "jsdom",
-  setupFiles: ["<rootDir>/test/setup.ts"],
+  setupFilesAfterEnv: ["<rootDir>/test/setup.ts"],
 }

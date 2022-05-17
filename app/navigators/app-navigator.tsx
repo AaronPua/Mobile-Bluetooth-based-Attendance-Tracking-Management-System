@@ -8,7 +8,7 @@ import React from "react"
 import { useColorScheme } from "react-native"
 import { NavigationContainer, DefaultTheme, DarkTheme } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
-import { WelcomeScreen, DemoScreen, DemoListScreen } from "../screens"
+import { BroadcastScreen, ScanScreen, LoginScreen, CoursesScreen, LessonsScreen, RegistrationScreen, ForgotPasswordScreen } from "../screens"
 import { navigationRef, useBackButtonHandler } from "./navigation-utilities"
 
 /**
@@ -28,6 +28,13 @@ export type NavigatorParamList = {
   demo: undefined
   demoList: undefined
   // 🔥 Your screens go here
+  login: undefined
+  registration: undefined
+  forgotPassword: undefined
+  courses: undefined
+  lessons: { courseId: string } | undefined
+  broadcast: { courseId: string, lessonId: string } | undefined
+  scan: { courseId: string, lessonId: string } | undefined
 }
 
 // Documentation: https://reactnavigation.org/docs/stack-navigator/
@@ -39,12 +46,19 @@ const AppStack = () => {
       screenOptions={{
         headerShown: false,
       }}
-      initialRouteName="welcome"
+      initialRouteName="login"
     >
-      <Stack.Screen name="welcome" component={WelcomeScreen} />
-      <Stack.Screen name="demo" component={DemoScreen} />
-      <Stack.Screen name="demoList" component={DemoListScreen} />
+      {/* <Stack.Screen name="welcome" component={WelcomeScreen} /> */}
+      {/* <Stack.Screen name="demo" component={DemoScreen} /> */}
+      {/* <Stack.Screen name="demoList" component={DemoListScreen} /> */}
       {/** 🔥 Your screens go here */}
+      <Stack.Screen name="login" component={LoginScreen} />
+      <Stack.Screen name="registration" component={RegistrationScreen} />
+      <Stack.Screen name="forgotPassword" component={ForgotPasswordScreen} />
+      <Stack.Screen name="courses" component={CoursesScreen} />
+      <Stack.Screen name="lessons" component={LessonsScreen} />
+      <Stack.Screen name="broadcast" component={BroadcastScreen} />
+      <Stack.Screen name="scan" component={ScanScreen} />
     </Stack.Navigator>
   )
 }
@@ -76,5 +90,5 @@ AppNavigator.displayName = "AppNavigator"
  *
  * `canExit` is used in ./app/app.tsx in the `useBackButtonHandler` hook.
  */
-const exitRoutes = ["welcome"]
+const exitRoutes = ["login"]
 export const canExit = (routeName: string) => exitRoutes.includes(routeName)

@@ -15,16 +15,27 @@ import React, { useState, useEffect } from "react"
 import { SafeAreaProvider, initialWindowMetrics } from "react-native-safe-area-context"
 import { initFonts } from "./theme/fonts" // expo
 import * as storage from "./utils/storage"
-import { AppNavigator, useNavigationPersistence } from "./navigators"
+import { AppNavigator, useNavigationPersistence, NavigatorParamList } from "./navigators"
 import { RootStore, RootStoreProvider, setupRootStore } from "./models"
 import { ToggleStorybook } from "../storybook/toggle-storybook"
 import { ErrorBoundary } from "./screens/error/error-boundary"
+import { NativeBaseProvider } from "native-base"
+import Meteor from '@meteorrn/core'
+
+declare global {
+    // eslint-disable-next-line @typescript-eslint/no-namespace
+    namespace ReactNavigation {
+        interface RootParamList extends NavigatorParamList {}
+    }
+}
 
 // This puts screens in a native ViewController or Activity. If you want fully native
 // stack navigation, use `createNativeStackNavigator` in place of `createStackNavigator`:
 // https://github.com/kmagiera/react-native-screens#using-native-stack-navigator
 
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
+
+Meteor.connect("ws://192.168.1.104:3000/websocket")
 
 /**
  * This is the root component of our app.
@@ -55,18 +66,20 @@ function App() {
 
   // otherwise, we're ready to render the app
   return (
-    <ToggleStorybook>
-      <RootStoreProvider value={rootStore}>
-        <SafeAreaProvider initialMetrics={initialWindowMetrics}>
-          <ErrorBoundary catchErrors={"always"}>
-            <AppNavigator
-              initialState={initialNavigationState}
-              onStateChange={onNavigationStateChange}
-            />
-          </ErrorBoundary>
-        </SafeAreaProvider>
-      </RootStoreProvider>
-    </ToggleStorybook>
+    <NativeBaseProvider>
+        <ToggleStorybook>
+            <RootStoreProvider value={rootStore}>
+                <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+                    <ErrorBoundary catchErrors={"always"}>
+                        <AppNavigator
+                            initialState={initialNavigationState}
+                            onStateChange={onNavigationStateChange}
+                        />
+                    </ErrorBoundary>
+                </SafeAreaProvider>
+            </RootStoreProvider>
+        </ToggleStorybook>
+    </NativeBaseProvider>
   )
 }
 
